@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.Card
 import androidx.compose.material.ExtendedFloatingActionButton
@@ -166,11 +167,9 @@ internal class MainScreen : Screen {
 @Composable
 fun BooksLazyColumn(bookList: List<Book>, addToCart: () -> Unit) {
     LazyColumn {
-//            items(bookList) { book ->
-//                {
-//                    BookCard(book = book, addToCart = { addToCart() })
-//                }
-//            }
+        items(bookList) { book ->
+            BookCard(book = book, addToCart = { addToCart() })
+        }
         for (book in bookList) {
             item {
                 BookCard(book = book, addToCart = {
@@ -189,7 +188,6 @@ picture and favorite icon button , add to shopping cart icon button.
 @param book The book object to display.
 @param addToCart A callback function to handle adding the book to the shopping cart.
  */
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun BookCard(book: Book, addToCart: () -> Unit) {
     Card(
