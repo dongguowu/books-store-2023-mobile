@@ -3,6 +3,7 @@
 package com.lduboscq.appkickstarter.main.component.bookstore
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.Card
 import androidx.compose.material.ExtendedFloatingActionButton
@@ -40,6 +42,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import com.lduboscq.appkickstarter.main.component.Image
 import model.Book
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import ui.theme.AppTheme
@@ -148,6 +151,11 @@ internal class MainScreen : Screen {
     @Composable
     fun BooksLazyColumn(bookList: List<Book>, addToCart: () -> Unit) {
         LazyColumn {
+//            items(bookList) { book ->
+//                {
+//                    BookCard(book = book, addToCart = { addToCart() })
+//                }
+//            }
             for (book in bookList) {
                 item {
                     BookCard(book = book, addToCart = {
@@ -157,6 +165,8 @@ internal class MainScreen : Screen {
             }
         }
     }
+
+
 
 
     /**
@@ -182,6 +192,8 @@ internal class MainScreen : Screen {
 //                    .padding(15.dp).clickable(onClick = { }),
 //                contentScale = ContentScale.Crop
 //            )
+                Image(url = book.imagePath, modifier = Modifier.size(width = 120.dp, height = 180.dp)
+                    .padding(15.dp).clickable(onClick = { }))
                 Column(
                     modifier = Modifier.padding(9.dp, 15.dp, 9.dp, 9.dp),
                 ) {
