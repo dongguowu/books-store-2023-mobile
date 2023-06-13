@@ -42,10 +42,52 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.lduboscq.appkickstarter.main.component.Image
+import com.lduboscq.appkickstarter.main.component.MyTopBar
 import model.Book
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
+
+sealed class AllScreens {
+    data class Home(val name: String) : AllScreens()
+    data class About(val count: Int) : AllScreens()
+}
+
+@Composable
+fun ScreenRouter(screen: AllScreens) {
+    val navigator = LocalNavigator.currentOrThrow
+    when (screen) {
+        is AllScreens.Home -> {
+            navigator.push(HomeScreen(name = screen.name))
+            HomeScreen(name = screen.name)
+        }
+
+        is AllScreens.About -> {
+            if (screen.count == 0) {
+                navigator.push(AboutScreen(message = "Welcome"))
+            } else {
+                navigator.push(AboutScreen(message = "Welcome Back"))
+            }
+        }
+    }
+}
+
+internal class HomeScreen(var name: String): Screen {
+    @Composable
+    override fun Content() {
+        Text("Home Page")
+    }
+}
+
+internal class AboutScreen(var message: String): Screen {
+
+    @Composable
+    override fun Content() {
+        Text(message)
+    }
+}
 internal class MainScreen : Screen {
 
     @Composable
@@ -93,29 +135,32 @@ internal class MainScreen : Screen {
         Scaffold(
             // Show info or warning message on topBar
             topBar = {
-                if (warningText.isNotEmpty()) {
-                    TopAppBar(
-                        title = { Text(text = warningText) },
-                        backgroundColor = MaterialTheme.colors.error,
-                        contentColor = MaterialTheme.colors.onError
-                    )
-                    infoText = ""
-                }
-                if (infoText.isNotEmpty()) {
-                    TopAppBar(
-                        title = { Text(text = infoText) },
-                        backgroundColor = MaterialTheme.colors.secondary,
-                        contentColor = MaterialTheme.colors.onSecondary
-                    )
-                    warningText = ""
-                }
+                     MyTopBar()
+//                if (warningText.isNotEmpty()) {
+//                    TopAppBar(
+//                        title = { Text(text = warningText) },
+//                        backgroundColor = MaterialTheme.colors.errorF,
+//                        contentColor = MaterialTheme.colors.onError
+//                    )
+//                    infoText = ""
+//                }
+//                if (infoText.isNotEmpty()) {
+//                    TopAppBar(
+//                        title = { Text(text = infoText) },
+//                        backgroundColor = MaterialTheme.colors.secondary,
+//                        contentColor = MaterialTheme.colors.onSecondary
+//                    )
+//                    warningText = ""
+//                }
             },
 
             // Show a shopping cart icon and the number of items on cart
             bottomBar = {
                 BottomAppBar {
                     IconButton(
-                        onClick = { infoText = "clicked." }
+                        onClick = { infoText = "clicked."
+//                            ScreenRouter(AllScreens.Home("this is a home page"))
+                        }
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.ShoppingCart,
