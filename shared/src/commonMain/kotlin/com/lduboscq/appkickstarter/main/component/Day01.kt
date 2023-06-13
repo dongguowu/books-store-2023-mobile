@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -28,19 +27,19 @@ fun HelloWorld() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(onClick = {
-            greetingText = "Hello, ${getPlatformName()}"
+//            greetingText = "Hello, ${getPlatformName()}"
             showImage = !showImage
         }) {
             Text(greetingText)
         }
         AnimatedVisibility(showImage) {
-            Image(
-                painterResource("compose-multiplatform.xml"),
-                null
-            )
+//            Image(
+//                painterResource("compose-multiplatform.xml"),
+//                null
+//            )
         }
     }
 }
 
-expect fun getPlatformName(): String
+//expect fun getPlatformName(): String
 
