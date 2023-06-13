@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.Card
 import androidx.compose.material.ExtendedFloatingActionButton
@@ -58,13 +57,30 @@ internal class MainScreen : Screen {
 
             // Global Variables
             val bookList = listOf(
-                Book(1, "head first kotlin", "head-first-kotlin.jpeg"),
-                Book(2, "joy of kotlin", "joy-of-kotlin.png"),
-                Book(3, "kotlin in action", "kotlin-in-action.png"),
-                Book(4, "head first kotlin", "head-first-kotlin.jpeg"),
-                Book(5, "joy of kotlin", "joy-of-kotlin.png"),
-                Book(6, "kotlin in action", "kotlin-in-action.png"),
-            )
+                Book(
+                    1,
+                    "head first kotlin",
+                    "https://kotlinlang.org/docs/images/head-first-kotlin.jpeg"
+                ),
+                Book(2, "joy of kotlin", "https://kotlinlang.org/docs/images/joy-of-kotlin.png"),
+                Book(
+                    3,
+                    "kotlin in action",
+                    "https://kotlinlang.org/docs/images/kotlin-in-action.png"
+                ),
+                Book(
+                    1,
+                    "head first kotlin",
+                    "https://kotlinlang.org/docs/images/head-first-kotlin.jpeg"
+                ),
+                Book(2, "joy of kotlin", "https://kotlinlang.org/docs/images/joy-of-kotlin.png"),
+                Book(
+                    3,
+                    "kotlin in action",
+                    "https://kotlinlang.org/docs/images/kotlin-in-action.png"
+                ),
+
+                )
             var queryString by remember { mutableStateOf("") }
             var infoText by remember { mutableStateOf("welcome, ") }
             var warningText by remember { mutableStateOf("") }
@@ -167,8 +183,6 @@ internal class MainScreen : Screen {
     }
 
 
-
-
     /**
 
     Represents a card component for displaying book information including title,
@@ -192,8 +206,10 @@ internal class MainScreen : Screen {
 //                    .padding(15.dp).clickable(onClick = { }),
 //                contentScale = ContentScale.Crop
 //            )
-                Image(url = book.imagePath, modifier = Modifier.size(width = 120.dp, height = 180.dp)
-                    .padding(15.dp).clickable(onClick = { }))
+                Image(url = book.imagePath,
+                    modifier = Modifier.size(width = 120.dp, height = 180.dp)
+                        .padding(15.dp).clickable(onClick = { })
+                )
                 Column(
                     modifier = Modifier.padding(9.dp, 15.dp, 9.dp, 9.dp),
                 ) {
