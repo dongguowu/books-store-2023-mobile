@@ -1,4 +1,4 @@
-package ui.theme
+package com.lduboscq.appkickstarter.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme

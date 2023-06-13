@@ -1,4 +1,4 @@
-package ui.theme
+package com.lduboscq.appkickstarter.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes
