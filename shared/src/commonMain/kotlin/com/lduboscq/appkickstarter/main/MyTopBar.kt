@@ -8,23 +8,19 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun MyTopBar(message: String, isErrorMessage: Boolean = false) {
-    TopAppBar {
+    if (message.isNotEmpty()) {
         if (isErrorMessage) {
-            if(message.isNotEmpty()){
-                TopAppBar(
-                    title = { Text(text = message) },
-                    backgroundColor = MaterialTheme.colors.error,
-                    contentColor = MaterialTheme.colors.onError
-                )
-            }
-        }else{
-            if (message.isNotEmpty()) {
-                TopAppBar(
-                    title = { Text(text = message) },
-                    backgroundColor = MaterialTheme.colors.secondary,
-                    contentColor = MaterialTheme.colors.onSecondary
-                )
-            }
+            TopAppBar(
+                title = { Text(text = message) },
+                backgroundColor = MaterialTheme.colors.error,
+                contentColor = MaterialTheme.colors.onError
+            )
+        } else {
+            TopAppBar(
+                title = { Text(text = message) },
+                backgroundColor = MaterialTheme.colors.secondary,
+                contentColor = MaterialTheme.colors.onSecondary
+            )
         }
     }
 }

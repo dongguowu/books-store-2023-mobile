@@ -78,8 +78,12 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
             ),
 
             )
+        var welcomeString = "welcome!"
+        if (user != null) {
+            welcomeString = "hi, ${user?.name}"
+        }
+        var infoText by remember { mutableStateOf(welcomeString) }
         var queryString by remember { mutableStateOf("") }
-        var infoText by remember { mutableStateOf("welcome, ") }
         var numberOfItems by remember { mutableStateOf(0) }
         fun addToCart(count: Int = 1) {
             numberOfItems += count
@@ -93,7 +97,7 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
             topBar = { MyTopBar(infoText, true) },
 
             // Show a shopping cart icon and the number of items on cart
-            bottomBar = { MyBottomBar(numberOfItems) },
+            bottomBar = { MyBottomBar(count = numberOfItems, currentScreen = Route.Home(user)) },
 
 
             // Button
