@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalResourceApi::class)
 
-package com.lduboscq.appkickstarter.main.component.bookstore
+package com.lduboscq.appkickstarter.main.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,20 +15,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.BottomAppBar
 import androidx.compose.material.Card
 import androidx.compose.material.ExtendedFloatingActionButton
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,51 +41,17 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.lduboscq.appkickstarter.main.component.Image
-import com.lduboscq.appkickstarter.main.component.MyTopBar
+import com.lduboscq.appkickstarter.main.Image
+import com.lduboscq.appkickstarter.main.MyBottomBar
+import com.lduboscq.appkickstarter.main.MyTopBar
+import com.lduboscq.appkickstarter.main.Route
+import com.lduboscq.appkickstarter.main.screenRouter
+import com.lduboscq.appkickstarter.model.User
 import model.Book
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 
-sealed class AllScreens {
-    data class Home(val name: String) : AllScreens()
-    data class About(val count: Int) : AllScreens()
-}
-
-@Composable
-fun ScreenRouter(screen: AllScreens) {
-    val navigator = LocalNavigator.currentOrThrow
-    when (screen) {
-        is AllScreens.Home -> {
-            navigator.push(HomeScreen(name = screen.name))
-            HomeScreen(name = screen.name)
-        }
-
-        is AllScreens.About -> {
-            if (screen.count == 0) {
-                navigator.push(AboutScreen(message = "Welcome"))
-            } else {
-                navigator.push(AboutScreen(message = "Welcome Back"))
-            }
-        }
-    }
-}
-
-internal class HomeScreen(var name: String): Screen {
-    @Composable
-    override fun Content() {
-        Text("Home Page")
-    }
-}
-
-internal class AboutScreen(var message: String): Screen {
-
-    @Composable
-    override fun Content() {
-        Text(message)
-    }
-}
-internal class MainScreen : Screen {
+internal class BookStoreHomeScreen(var user: User? = null) : Screen {
 
     @Composable
     override fun Content() {
@@ -100,80 +63,51 @@ internal class MainScreen : Screen {
         // Global Variables
         val bookList = listOf(
             Book(
-                1,
-                "head first kotlin",
-                "https://kotlinlang.org/docs/images/head-first-kotlin.jpeg"
+                1, "head first kotlin", "https://kotlinlang.org/docs/images/head-first-kotlin.jpeg"
             ),
             Book(2, "joy of kotlin", "https://kotlinlang.org/docs/images/joy-of-kotlin.png"),
             Book(
-                3,
-                "kotlin in action",
-                "https://kotlinlang.org/docs/images/kotlin-in-action.png"
+                3, "kotlin in action", "https://kotlinlang.org/docs/images/kotlin-in-action.png"
             ),
             Book(
-                1,
-                "head first kotlin",
-                "https://kotlinlang.org/docs/images/head-first-kotlin.jpeg"
+                1, "head first kotlin", "https://kotlinlang.org/docs/images/head-first-kotlin.jpeg"
             ),
             Book(2, "joy of kotlin", "https://kotlinlang.org/docs/images/joy-of-kotlin.png"),
             Book(
-                3,
-                "kotlin in action",
-                "https://kotlinlang.org/docs/images/kotlin-in-action.png"
+                3, "kotlin in action", "https://kotlinlang.org/docs/images/kotlin-in-action.png"
             ),
 
             )
         var queryString by remember { mutableStateOf("") }
         var infoText by remember { mutableStateOf("welcome, ") }
-        var warningText by remember { mutableStateOf("") }
         var numberOfItems by remember { mutableStateOf(0) }
         fun addToCart(count: Int = 1) {
             numberOfItems += count
         }
 
+        val navigator = LocalNavigator.currentOrThrow
+
         // Layout
         Scaffold(
             // Show info or warning message on topBar
-            topBar = {
-                     MyTopBar()
-//                if (warningText.isNotEmpty()) {
-//                    TopAppBar(
-//                        title = { Text(text = warningText) },
-//                        backgroundColor = MaterialTheme.colors.errorF,
-//                        contentColor = MaterialTheme.colors.onError
-//                    )
-//                    infoText = ""
-//                }
-//                if (infoText.isNotEmpty()) {
-//                    TopAppBar(
-//                        title = { Text(text = infoText) },
-//                        backgroundColor = MaterialTheme.colors.secondary,
-//                        contentColor = MaterialTheme.colors.onSecondary
-//                    )
-//                    warningText = ""
-//                }
-            },
+            topBar = { MyTopBar(infoText, true) },
 
             // Show a shopping cart icon and the number of items on cart
-            bottomBar = {
-                BottomAppBar {
-                    IconButton(
-                        onClick = { infoText = "clicked."
-//                            ScreenRouter(AllScreens.Home("this is a home page"))
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.ShoppingCart,
-                            contentDescription = "shopping cart"
-                        )
-                    }
+            bottomBar = { MyBottomBar(numberOfItems) },
 
-                    Text(
-                        text = numberOfItems.toString()
-                    )
+
+            // Button
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = {
+                        navigator.push(screenRouter(Route.About(numberOfItems)))
+                    },
+                ) {
+                    Text("Click me")
                 }
             }
 
+            // end of Button
         ) {
 
             // Main body, display a search textField and a list of book cards
@@ -181,8 +115,7 @@ internal class MainScreen : Screen {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(0.dp, 16.dp, 0.dp, 9.dp)
-                    .background(color = MaterialTheme.colors.background)
-                    .fillMaxSize(),
+                    .background(color = MaterialTheme.colors.background).fillMaxSize(),
             ) {
 
                 // Search
@@ -235,23 +168,19 @@ picture and favorite icon button , add to shopping cart icon button.
  */
 @Composable
 fun BookCard(book: Book, addToCart: () -> Unit) {
+    val navigator = LocalNavigator.currentOrThrow
     Card(
-        modifier = Modifier.size(width = 400.dp, height = 200.dp)
-            .padding(15.dp),
+        modifier = Modifier.size(width = 400.dp, height = 200.dp).padding(15.dp),
         backgroundColor = MaterialTheme.colors.secondary
     ) {
         Row {
-//            Image(
-//                painter = painterResource(book.imagePath),
-//                contentDescription = "",
-//                modifier = Modifier.size(width = 120.dp, height = 180.dp)
-//                    .padding(15.dp).clickable(onClick = { }),
-//                contentScale = ContentScale.Crop
-//            )
+
             Image(
                 url = book.imagePath,
-                modifier = Modifier.size(width = 120.dp, height = 180.dp)
-                    .padding(15.dp).clickable(onClick = { })
+                modifier = Modifier.size(width = 120.dp, height = 180.dp).padding(15.dp)
+                    .clickable(onClick = {
+                        navigator.push(screenRouter(Route.Detail(book)))
+                    })
             )
             Column(
                 modifier = Modifier.padding(9.dp, 15.dp, 9.dp, 9.dp),
@@ -268,44 +197,33 @@ fun BookCard(book: Book, addToCart: () -> Unit) {
 
                 Row {
                     // Favorite icon
-                    var favoriteIconTint by
-                    remember { mutableStateOf(Color.Gray) }
-                    ExtendedFloatingActionButton(
-                        onClick = {
-                            favoriteIconTint = if (favoriteIconTint == Color.Gray) {
-                                Color.Red
-                            } else {
-                                Color.Gray
-                            }
-                        },
-                        backgroundColor = MaterialTheme.colors.primary,
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Outlined.Favorite,
-                                contentDescription = "Favorite",
-                                tint = favoriteIconTint
-                            )
-                        },
-                        text = { Text("") })
+                    var favoriteIconTint by remember { mutableStateOf(Color.Gray) }
+                    ExtendedFloatingActionButton(onClick = {
+                        favoriteIconTint = if (favoriteIconTint == Color.Gray) {
+                            Color.Red
+                        } else {
+                            Color.Gray
+                        }
+                    }, backgroundColor = MaterialTheme.colors.primary, icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Favorite,
+                            contentDescription = "Favorite",
+                            tint = favoriteIconTint
+                        )
+                    }, text = { Text("") })
 
                     Spacer(modifier = Modifier.width(20.dp))
                     // Add to shopping cart icon
-                    ExtendedFloatingActionButton(
-                        onClick = {
-                            addToCart()
-                        },
-                        backgroundColor = MaterialTheme.colors.primary,
-                        icon = {
-                            Icon(
-                                Icons.Filled.Add,
-                                contentDescription = "Add to " + "shopping cart"
-                            )
-                        },
-                        text = { Text("") })
+                    ExtendedFloatingActionButton(onClick = {
+                        addToCart()
+                    }, backgroundColor = MaterialTheme.colors.primary, icon = {
+                        Icon(
+                            Icons.Filled.Add, contentDescription = "Add to " + "shopping cart"
+                        )
+                    }, text = { Text("") })
                 }
             }
         }
     }
 }
-//}
 
