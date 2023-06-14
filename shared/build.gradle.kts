@@ -46,6 +46,8 @@ kotlin {
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 
+                implementation("io.realm.kotlin:library-sync:1.9.1")
+
                 api("io.github.aakira:napier:$napierVersion")
 
                 api("com.russhwolf:multiplatform-settings:1.0.0")
