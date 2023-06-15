@@ -1,4 +1,4 @@
-package com.lduboscq.appkickstarter.model
+package com.lduboscq.appkickstarter.main.data
 
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.Index
@@ -7,7 +7,7 @@ import org.mongodb.kbson.ObjectId
 
 class BookSchema : RealmObject {
     @PrimaryKey
-    var _id: ObjectId = ObjectId()
+    var _id: String = ""
 
     @Index
     var title: String = "a string for title."

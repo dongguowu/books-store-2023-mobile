@@ -2,15 +2,46 @@ package com.lduboscq.appkickstarter
 
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
+import io.realm.kotlin.log.LogLevel
+import io.realm.kotlin.mongodb.App
+import io.realm.kotlin.mongodb.AppConfiguration
+import io.realm.kotlin.mongodb.Credentials
+import io.realm.kotlin.mongodb.exceptions.SyncException
+import io.realm.kotlin.mongodb.sync.SyncConfiguration
+import io.realm.kotlin.mongodb.sync.SyncSession
 import io.realm.kotlin.types.MutableRealmInt
 
-class FrogRepositoryLocal() {
+class FrogRepositoryRemote() {
 
     lateinit var realm: Realm
 
-    private fun setupRealmSync() {
-        val config = RealmConfiguration.Builder(setOf(Frog::class))
-            .inMemory()
+    private val appServiceInstance by lazy {
+        val configuration =
+            AppConfiguration.Builder("application-0-luysu").log(LogLevel.ALL)
+                .build()
+        App.create(configuration)
+    }
+
+    private suspend fun setupRealmSync() {
+        val user =
+            appServiceInstance.login(Credentials.apiKey("D57YZuuBYkKYTxopA4isfgJbGlGVLmiKhluhqHOev8GyAMrizUr9XINvHKGxEvVH"))
+
+        println("Got Here")
+        val config = SyncConfiguration.Builder(user, setOf(Frog::class))
+            .initialSubscriptions { realm ->
+                add(
+                    realm.query<Frog>(
+                        Frog::class,
+                        "_id == $0",
+                        user.id
+                    ),
+                    name = "FrogSub",
+                    updateExisting = true
+                )
+            }
+            .errorHandler { session: SyncSession, error: SyncException ->
+                println("****************************************\n" + error)
+            }
             .build()
         realm = Realm.open(config)
     }
@@ -35,7 +66,7 @@ class FrogRepositoryLocal() {
         return realm.query<Frog>(Frog::class).find()
     }
 
-    fun getFrog(name: String): List<Frog> {
+    suspend fun getFrog(name: String): List<Frog> {
         if (!this::realm.isInitialized) {
             setupRealmSync()
         }

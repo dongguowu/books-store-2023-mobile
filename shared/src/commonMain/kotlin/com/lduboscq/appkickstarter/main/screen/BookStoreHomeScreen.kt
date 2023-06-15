@@ -46,7 +46,10 @@ import com.lduboscq.appkickstarter.main.MyBottomBar
 import com.lduboscq.appkickstarter.main.MyTopBar
 import com.lduboscq.appkickstarter.main.Route
 import com.lduboscq.appkickstarter.main.screenRouter
+import com.lduboscq.appkickstarter.main.data.BookSchema
 import com.lduboscq.appkickstarter.model.User
+import io.realm.kotlin.Realm
+import io.realm.kotlin.RealmConfiguration
 import model.Book
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
@@ -61,6 +64,13 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
 //        AppTheme {
 
         // Global Variables
+        val config = RealmConfiguration.Builder(setOf(BookSchema::class)).inMemory().build()
+        val realm = Realm.open(config)
+//        Log.v("Successfully opened an in memory realm")
+
+
+
+
         val bookList = listOf(
             Book(
                 1, "head first kotlin", "https://kotlinlang.org/docs/images/head-first-kotlin.jpeg"

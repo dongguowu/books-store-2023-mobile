@@ -11,7 +11,8 @@ import com.lduboscq.appkickstarter.ui.theme.AppTheme
 @Composable
 public fun MainApp() {
     AppTheme {
-        Navigator(BookStoreHomeScreen()) { navigator ->
+//        Navigator(BookStoreHomeScreen()) { navigator ->
+            Navigator(FrogScreen()) { navigator ->
             SlideTransition(navigator)
         }
     }
