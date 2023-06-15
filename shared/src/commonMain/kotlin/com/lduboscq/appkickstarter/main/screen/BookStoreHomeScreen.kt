@@ -55,14 +55,6 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
 
     @Composable
     override fun Content() {
-//
-//@Composable
-//fun MainScreen() {
-//        AppTheme {
-
-        // Global Variables
-
-//        Log.v("Successfully opened an in memory realm")
 
 
         val bookList = listOf(

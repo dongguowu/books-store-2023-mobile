@@ -58,7 +58,13 @@ class FrogScreen : Screen {
                     Button(onClick = {
                         screenModel.deleteFrog(frog._id)
                     }) {
-                        Text("name: ${frog.name}, \nid: ${frog._id}\n\n")
+                        Column{
+                            Text("name: ${frog.name}, \nid: ${frog._id}")
+                            Text("age: ${frog?.age}")
+                            Text("Species: ${frog?.species}")
+                            Text("Owner: ${frog?.owner}")
+                        }
+
                     }
                     Spacer(modifier = Modifier.height(9.dp))
 

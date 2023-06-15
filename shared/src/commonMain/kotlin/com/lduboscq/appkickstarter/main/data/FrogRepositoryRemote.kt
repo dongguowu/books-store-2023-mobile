@@ -62,17 +62,18 @@ class FrogRepositoryRemote() {
             frog.owner = owner
         }
 
-        return realm.query(Frog::class).find()
+        return getAllFrog()
     }
 
     suspend fun getFrog(name: String): List<Frog> {
         if (!this::realm.isInitialized) {
             setupRealmSync()
         }
-        // Search equality on the primary key field name
+        // return all frogs on database
         if (name.isEmpty()) {
-            return realm.query(Frog::class).find()
+            return getAllFrog()
         }
+        // Search equality on the primary key field name
         return realm.query(Frog::class, "name == $0", name).find()
     }
 
@@ -80,13 +81,20 @@ class FrogRepositoryRemote() {
         if (!this::realm.isInitialized) {
             setupRealmSync()
         }
-        val frogDb = realm.query(Frog::class, "_id == $0", id).first().find()
-        if (frogDb == null) {
-            println("****************************************\n" + "not found frog(id= ${id}}")
-        }
+
         realm.writeBlocking {
-            val frog = query(Frog::class, "_id == $0", id).find()
-            delete(frog)
+            val frogDb = query(Frog::class, "_id == $0", id).find()
+            if (frogDb == null) {
+                println("****************************************\n" + "not found frog(id= ${id}}")
+            }
+            delete(frogDb)
+        }
+        return getAllFrog()
+    }
+
+    private suspend fun getAllFrog(): List<Frog> {
+        if (!this::realm.isInitialized) {
+            setupRealmSync()
         }
         return realm.query(Frog::class).find()
     }
