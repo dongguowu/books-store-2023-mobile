@@ -31,4 +31,11 @@ class FrogScreenModel(private val repository: FrogRepositoryRemote)
         }
     }
 
+    fun deleteFrog(id: String) {
+        coroutineScope.launch {
+            mutableState.value = State.Loading
+            mutableState.value = State.Result(frogList = repository.deleteFrog(id))
+        }
+    }
+
 }

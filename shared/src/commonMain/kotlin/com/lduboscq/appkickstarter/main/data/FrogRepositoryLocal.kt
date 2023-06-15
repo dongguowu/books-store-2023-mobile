@@ -35,11 +35,24 @@ class FrogRepositoryLocal() {
         return realm.query<Frog>(Frog::class).find()
     }
 
-    fun getFrog(name: String): List<Frog> {
+    suspend fun getFrog(name: String): List<Frog> {
         if (!this::realm.isInitialized) {
             setupRealmSync()
         }
         // Search equality on the primary key field name
         return realm.query(Frog::class, "name == $0", name).find()
+    }
+
+    suspend fun deleteFrog(id: String): Unit {
+        if (!this::realm.isInitialized) {
+            setupRealmSync()
+        }
+        val frogDb = realm.query(Frog::class, "_id == $0", id).first().find()
+        if (frogDb == null) {
+            println("****************************************\n" + "not found frog(id= ${id}}")
+            return
+        }
+        // Search equality on the primary key field name
+        return
     }
 }

@@ -1,7 +1,6 @@
 package com.lduboscq.appkickstarter
 
 import io.realm.kotlin.Realm
-import io.realm.kotlin.RealmConfiguration
 import io.realm.kotlin.log.LogLevel
 import io.realm.kotlin.mongodb.App
 import io.realm.kotlin.mongodb.AppConfiguration
@@ -63,7 +62,7 @@ class FrogRepositoryRemote() {
             frog.owner = owner
         }
 
-        return realm.query<Frog>(Frog::class).find()
+        return realm.query(Frog::class).find()
     }
 
     suspend fun getFrog(name: String): List<Frog> {
@@ -71,6 +70,24 @@ class FrogRepositoryRemote() {
             setupRealmSync()
         }
         // Search equality on the primary key field name
+        if (name.isEmpty()) {
+            return realm.query(Frog::class).find()
+        }
         return realm.query(Frog::class, "name == $0", name).find()
+    }
+
+    suspend fun deleteFrog(id: String): List<Frog> {
+        if (!this::realm.isInitialized) {
+            setupRealmSync()
+        }
+        val frogDb = realm.query(Frog::class, "_id == $0", id).first().find()
+        if (frogDb == null) {
+            println("****************************************\n" + "not found frog(id= ${id}}")
+        }
+        realm.writeBlocking {
+            val frog = query(Frog::class, "_id == $0", id).find()
+            delete(frog)
+        }
+        return realm.query(Frog::class).find()
     }
 }
