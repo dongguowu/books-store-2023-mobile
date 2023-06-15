@@ -96,6 +96,8 @@ class FrogRepositoryRemote() {
         if (!this::realm.isInitialized) {
             setupRealmSync()
         }
-        return realm.query(Frog::class).find()
+        var list =  realm.query(Frog::class).find()
+//        closeRealmSync()
+        return list
     }
 }

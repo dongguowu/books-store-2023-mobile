@@ -37,9 +37,8 @@ class FrogScreen : Screen {
 
                 else -> {}
             }
-            Row {
-                TextField(value = frogName, onValueChange = { frogName = it })
-            }
+            Text("Please enter the name of the frog to add/get/update/delete")
+            TextField(value = frogName, onValueChange = { frogName = it })
 
             Row {
 
@@ -58,7 +57,7 @@ class FrogScreen : Screen {
                     Button(onClick = {
                         screenModel.deleteFrog(frog._id)
                     }) {
-                        Column{
+                        Column {
                             Text("name: ${frog.name}, \nid: ${frog._id}")
                             Text("age: ${frog?.age}")
                             Text("Species: ${frog?.species}")
