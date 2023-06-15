@@ -1,5 +1,6 @@
 package com.lduboscq.appkickstarter
 
+import com.lduboscq.appkickstarter.main.data.FrogRepositoryInterface
 import io.realm.kotlin.Realm
 import io.realm.kotlin.log.LogLevel
 import io.realm.kotlin.mongodb.App
@@ -10,7 +11,7 @@ import io.realm.kotlin.mongodb.sync.SyncConfiguration
 import io.realm.kotlin.mongodb.sync.SyncSession
 import io.realm.kotlin.types.MutableRealmInt
 
-class FrogRepositoryRemote() {
+class FrogRepositoryRemote() : FrogRepositoryInterface {
 
     lateinit var realm: Realm
 
@@ -49,7 +50,12 @@ class FrogRepositoryRemote() {
         realm.close()
     }
 
-    suspend fun addFrog(name: String, age: Int, species: String, owner: String): List<Frog> {
+    override suspend fun addFrog(
+        name: String,
+        age: Int,
+        species: String,
+        owner: String
+    ): List<Frog> {
         if (!this::realm.isInitialized) {
             setupRealmSync()
         }
@@ -65,7 +71,7 @@ class FrogRepositoryRemote() {
         return getAllFrog()
     }
 
-    suspend fun getFrog(name: String): List<Frog> {
+    override suspend fun getFrog(name: String): List<Frog> {
         if (!this::realm.isInitialized) {
             setupRealmSync()
         }
@@ -77,17 +83,17 @@ class FrogRepositoryRemote() {
         return realm.query(Frog::class, "name == $0", name).find()
     }
 
-    suspend fun deleteFrog(id: String): List<Frog> {
+    override suspend fun deleteFrog(id: String): List<Frog> {
         if (!this::realm.isInitialized) {
             setupRealmSync()
         }
 
         realm.writeBlocking {
-            val frogDb = query(Frog::class, "_id == $0", id).find()
+            val frogDb = query(Frog::class, "_id == $0", id).first().find()
             if (frogDb == null) {
                 println("****************************************\n" + "not found frog(id= ${id}}")
             }
-            delete(frogDb)
+            frogDb?.let { delete(it) }
         }
         return getAllFrog()
     }
@@ -96,7 +102,7 @@ class FrogRepositoryRemote() {
         if (!this::realm.isInitialized) {
             setupRealmSync()
         }
-        var list =  realm.query(Frog::class).find()
+        var list = realm.query(Frog::class).find()
 //        closeRealmSync()
         return list
     }

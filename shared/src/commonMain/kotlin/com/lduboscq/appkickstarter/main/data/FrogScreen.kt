@@ -37,8 +37,8 @@ class FrogScreen : Screen {
 
                 else -> {}
             }
-            Text("Please enter the name of the frog to add/get/update/delete")
             TextField(value = frogName, onValueChange = { frogName = it })
+            Text("Please enter the name of the frog to add/get/update/delete")
 
             Row {
 
@@ -59,7 +59,7 @@ class FrogScreen : Screen {
                     }) {
                         Column {
                             Text("name: ${frog.name}, \nid: ${frog._id}")
-                            Text("age: ${frog?.age}")
+                            Text("age: ${frog?.age?.toString()}")
                             Text("Species: ${frog?.species}")
                             Text("Owner: ${frog?.owner}")
                         }
