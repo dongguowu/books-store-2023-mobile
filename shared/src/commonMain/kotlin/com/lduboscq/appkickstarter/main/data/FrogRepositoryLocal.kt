@@ -27,7 +27,7 @@ class FrogRepositoryLocal() {
         realm.writeBlocking {
             val frog: Frog = this.copyToRealm(Frog())
             frog.name = name
-            frog.age = MutableRealmInt.create(age.toLong())
+            frog.age = age
             frog.species = species
             frog.owner = owner
         }
