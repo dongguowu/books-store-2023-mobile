@@ -48,6 +48,7 @@ kotlin {
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 
                 implementation("io.realm.kotlin:library-sync:1.9.1")
+//                implementation("com.google.android.material:material:1.10.0-alpha04")
 
                 api("io.github.aakira:napier:$napierVersion")
 

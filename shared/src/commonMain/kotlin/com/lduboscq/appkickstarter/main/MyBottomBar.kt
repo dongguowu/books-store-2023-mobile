@@ -10,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.ShoppingCart
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -21,42 +22,45 @@ import com.lduboscq.appkickstarter.model.User
 fun MyBottomBar(count: Int, currentScreen: Route) {
     BottomAppBar() {
         val navigator = LocalNavigator.currentOrThrow
-        BottomAppBar {
-            Row {
-                // Home Icon
-                if (currentScreen !is Route.Home) {
-                    IconButton(
-                        onClick = {
-                            val user = User("Donggu")
-                            navigator.push(screenRouter(Route.Home(user)))
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Home,
-                            contentDescription = "Back Home"
-                        )
-                    }
-                }
-
-
-
-                Spacer(modifier = Modifier.width(30.dp))
-                // Shopping cart icon
+        BottomAppBar(
+            backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+        ) {
+        Row {
+            // Home Icon
+            if (currentScreen !is Route.Home) {
                 IconButton(
                     onClick = {
-                        navigator.push(screenRouter(Route.ShoppingCart(count)))
+                        val user = User("Donggu")
+                        navigator.push(screenRouter(Route.Home(user)))
                     }
                 ) {
                     Icon(
-                        imageVector = Icons.Outlined.ShoppingCart,
-                        contentDescription = "shopping cart"
+                        imageVector = Icons.Outlined.Home,
+                        contentDescription = "Back Home"
                     )
                 }
+            }
 
-                Text(
-                    text = count.toString()
+
+
+            Spacer(modifier = Modifier.width(30.dp))
+            // Shopping cart icon
+            IconButton(
+                onClick = {
+                    navigator.push(screenRouter(Route.ShoppingCart(count)))
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.ShoppingCart,
+                    contentDescription = "shopping cart"
                 )
             }
+
+            Text(
+                text = count.toString()
+            )
         }
+    }
     }
 }

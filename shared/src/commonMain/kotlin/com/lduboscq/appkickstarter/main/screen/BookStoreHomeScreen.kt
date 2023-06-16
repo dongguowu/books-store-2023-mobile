@@ -2,7 +2,6 @@
 
 package com.lduboscq.appkickstarter.main.screen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,15 +16,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.ExtendedFloatingActionButton
-import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -46,100 +46,87 @@ import com.lduboscq.appkickstarter.main.MyBottomBar
 import com.lduboscq.appkickstarter.main.MyTopBar
 import com.lduboscq.appkickstarter.main.Route
 import com.lduboscq.appkickstarter.main.screenRouter
+import com.lduboscq.appkickstarter.model.Book
 import com.lduboscq.appkickstarter.model.User
-import model.Book
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 
 internal class BookStoreHomeScreen(var user: User? = null) : Screen {
 
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
 
 
         val bookList = listOf(
             Book(
-                1, "head first kotlin", "https://kotlinlang.org/docs/images/head-first-kotlin.jpeg"
+                "ad",
+                "head first kotlin",
+                "https://kotlinlang.org/docs/images/head-first-kotlin.jpeg"
             ),
-            Book(2, "joy of kotlin", "https://kotlinlang.org/docs/images/joy-of-kotlin.png"),
+            Book("ad", "joy of kotlin", "https://kotlinlang.org/docs/images/joy-of-kotlin.png"),
             Book(
-                3, "kotlin in action", "https://kotlinlang.org/docs/images/kotlin-in-action.png"
+                "ad", "kotlin in action", "https://kotlinlang.org/docs/images/kotlin-in-action.png"
             ),
             Book(
-                1, "head first kotlin", "https://kotlinlang.org/docs/images/head-first-kotlin.jpeg"
+                "ad",
+                "head first kotlin",
+                "https://kotlinlang.org/docs/images/head-first-kotlin.jpeg"
             ),
-            Book(2, "joy of kotlin", "https://kotlinlang.org/docs/images/joy-of-kotlin.png"),
+            Book("ad", "joy of kotlin", "https://kotlinlang.org/docs/images/joy-of-kotlin.png"),
             Book(
-                3, "kotlin in action", "https://kotlinlang.org/docs/images/kotlin-in-action.png"
+                "ad", "kotlin in action", "https://kotlinlang.org/docs/images/kotlin-in-action.png"
             ),
-
-            )
+        )
         var welcomeString = "welcome!"
         if (user != null) {
             welcomeString = "hi, ${user?.name}"
         }
         var infoText by remember { mutableStateOf(welcomeString) }
-        var queryString by remember { mutableStateOf("") }
         var numberOfItems by remember { mutableStateOf(0) }
         fun addToCart(count: Int = 1) {
             numberOfItems += count
         }
 
-        val navigator = LocalNavigator.currentOrThrow
+        val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
         // Layout
         Scaffold(
-            // Show info or warning message on topBar
-            topBar = { MyTopBar(infoText, true) },
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+            topBar = { MyTopBar(infoText, false, scrollBehavior) },
 
-            // Show a shopping cart icon and the number of items on cart
             bottomBar = { MyBottomBar(count = numberOfItems, currentScreen = Route.Home(user)) },
 
-
-            // Button
-            floatingActionButton = {
-                FloatingActionButton(
-                    onClick = {
-                        navigator.push(screenRouter(Route.About(numberOfItems)))
-                    },
+            content = {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(0.dp, 16.dp, 0.dp, 9.dp)
+                        .fillMaxSize(),
                 ) {
-                    Text("Click me")
+                    SearchBook(updateInfo = { infoText = it }, updateQueryString = {})
+                    BooksLazyColumn(bookList = bookList, addToCart = { addToCart() })
                 }
             }
 
-            // end of Button
-        ) {
+        )
 
-            // Main body, display a search textField and a list of book cards
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(0.dp, 16.dp, 0.dp, 9.dp)
-                    .background(color = MaterialTheme.colors.background).fillMaxSize(),
-            ) {
-
-                // Search
-                TextField(
-                    value = queryString,
-                    onValueChange = {
-                        queryString = it
-                        infoText = if (queryString.length >= 3) {
-                            "Found book related $queryString"
-                        } else {
-                            ""
-                        }
-
-                    },
-                    singleLine = true,
-                    label = { Text("Enter book's title") },
-                    shape = MaterialTheme.shapes.large
-                )
-
-                BooksLazyColumn(bookList = bookList, addToCart = { addToCart() })
-
-            }
-        }
     }
+}
+
+@Composable
+fun SearchBook(updateQueryString: (String) -> Unit, updateInfo: (String) -> Unit) {
+    var string = ""
+    TextField(
+        value = string,
+        onValueChange = {
+            updateQueryString(it)
+            updateInfo("Found book related $it")
+        },
+        singleLine = true,
+        label = { Text("Enter book's title") },
+        shape = MaterialTheme.shapes.large
+    )
 }
 
 @Composable
@@ -212,15 +199,6 @@ fun BookCard(book: Book, addToCart: () -> Unit) {
                         )
                     }, text = { Text("") })
 
-                    Spacer(modifier = Modifier.width(20.dp))
-                    // Add to shopping cart icon
-                    ExtendedFloatingActionButton(onClick = {
-                        addToCart()
-                    }, backgroundColor = MaterialTheme.colors.primary, icon = {
-                        Icon(
-                            Icons.Filled.Add, contentDescription = "Add to " + "shopping cart"
-                        )
-                    }, text = { Text("") })
                 }
             }
         }
