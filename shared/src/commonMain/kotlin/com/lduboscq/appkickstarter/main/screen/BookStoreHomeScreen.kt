@@ -17,13 +17,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -92,25 +92,22 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
 
         // Layout
         Scaffold(
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = { MyTopBar(infoText, false, scrollBehavior) },
 
             bottomBar = { MyBottomBar(count = numberOfItems, currentScreen = Route.Home(user)) },
 
-            content = {
+            content = { paddingValues ->
                 Column(
-                    verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(0.dp, 16.dp, 0.dp, 9.dp)
-                        .fillMaxSize(),
+                    modifier = Modifier.padding(paddingValues),
                 ) {
                     SearchBook(updateInfo = { infoText = it }, updateQueryString = {})
                     BooksLazyColumn(bookList = bookList, addToCart = { addToCart() })
                 }
-            }
-
+            },
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+            backgroundColor = MaterialTheme.colorScheme.background
         )
-
     }
 }
 
@@ -158,7 +155,7 @@ fun BookCard(book: Book, addToCart: () -> Unit) {
     val navigator = LocalNavigator.currentOrThrow
     Card(
         modifier = Modifier.size(width = 400.dp, height = 200.dp).padding(15.dp),
-        backgroundColor = MaterialTheme.colors.secondary
+        backgroundColor = MaterialTheme.colorScheme.tertiaryContainer
     ) {
         Row {
 
@@ -176,7 +173,7 @@ fun BookCard(book: Book, addToCart: () -> Unit) {
                     text = book.title,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = MaterialTheme.colors.onSecondary,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
                     textAlign = TextAlign.Start,
                 )
 
@@ -191,7 +188,7 @@ fun BookCard(book: Book, addToCart: () -> Unit) {
                         } else {
                             Color.Gray
                         }
-                    }, backgroundColor = MaterialTheme.colors.primary, icon = {
+                    }, backgroundColor = MaterialTheme.colorScheme.primary, icon = {
                         Icon(
                             imageVector = Icons.Outlined.Favorite,
                             contentDescription = "Favorite",

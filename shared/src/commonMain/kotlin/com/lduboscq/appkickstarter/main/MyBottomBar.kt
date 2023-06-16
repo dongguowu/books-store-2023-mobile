@@ -1,6 +1,5 @@
 package com.lduboscq.appkickstarter.main
 
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.BottomAppBar
@@ -20,13 +19,12 @@ import com.lduboscq.appkickstarter.model.User
 
 @Composable
 fun MyBottomBar(count: Int, currentScreen: Route) {
-    BottomAppBar() {
-        val navigator = LocalNavigator.currentOrThrow
-        BottomAppBar(
-            backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-        ) {
-        Row {
+    val navigator = LocalNavigator.currentOrThrow
+    BottomAppBar(
+        backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        content = {
+
             // Home Icon
             if (currentScreen !is Route.Home) {
                 IconButton(
@@ -41,8 +39,6 @@ fun MyBottomBar(count: Int, currentScreen: Route) {
                     )
                 }
             }
-
-
 
             Spacer(modifier = Modifier.width(30.dp))
             // Shopping cart icon
@@ -61,6 +57,5 @@ fun MyBottomBar(count: Int, currentScreen: Route) {
                 text = count.toString()
             )
         }
-    }
-    }
+    )
 }
