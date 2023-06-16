@@ -3,17 +3,14 @@
 package com.lduboscq.appkickstarter.main.screen
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
@@ -129,14 +126,42 @@ fun SearchBook(updateQueryString: (String) -> Unit, updateInfo: (String) -> Unit
 @Composable
 fun BooksLazyColumn(bookList: List<Book>, addToCart: () -> Unit) {
     LazyColumn {
-        items(bookList) { book ->
-            BookCard(book = book, addToCart = { addToCart() })
-        }
+
+        var i = 2;
         for (book in bookList) {
             item {
-                BookCard(book = book, addToCart = {
-                    addToCart()
-                })
+                var n = i++ % 3
+                when (n) {
+                    0 -> {
+                        BookCard(
+                            textColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+                            book = book,
+                            addToCart = {
+                                addToCart()
+                            })
+                    }
+
+                    1 -> {
+                        BookCard(
+                            textColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                            backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+                            book = book,
+                            addToCart = {
+                                addToCart()
+                            })
+                    }
+
+                    2 -> {
+                        BookCard(
+                            textColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                            backgroundColor = MaterialTheme.colorScheme.tertiaryContainer,
+                            book = book,
+                            addToCart = {
+                                addToCart()
+                            })
+                    }
+                }
             }
         }
     }
@@ -151,11 +176,11 @@ picture and favorite icon button , add to shopping cart icon button.
 @param addToCart A callback function to handle adding the book to the shopping cart.
  */
 @Composable
-fun BookCard(book: Book, addToCart: () -> Unit) {
+fun BookCard(textColor: Color, backgroundColor: Color, book: Book, addToCart: () -> Unit) {
     val navigator = LocalNavigator.currentOrThrow
     Card(
         modifier = Modifier.size(width = 400.dp, height = 200.dp).padding(15.dp),
-        backgroundColor = MaterialTheme.colorScheme.tertiaryContainer
+        backgroundColor = backgroundColor
     ) {
         Row {
 
@@ -173,7 +198,7 @@ fun BookCard(book: Book, addToCart: () -> Unit) {
                     text = book.title,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    color = textColor,
                     textAlign = TextAlign.Start,
                 )
 

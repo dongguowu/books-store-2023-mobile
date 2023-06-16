@@ -1,4 +1,4 @@
-package com.lduboscq.appkickstarter.ui.theme
+package com.lduboscq.appkickstarter.ui.theme.green
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Shapes
