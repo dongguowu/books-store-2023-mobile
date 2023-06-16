@@ -50,13 +50,15 @@ class FrogScreen : Screen {
                 Button(onClick = { screenModel.getFrog(frogName) }) {
                     Text("Get Frog")
                 }
+
+
             }
             if (state is FrogScreenModel.State.Result) {
 
                 for (frog in (state as FrogScreenModel.State.Result).frogList) {
                     Button(onClick = {
-                        screenModel.deleteFrog(frog._id)
-                    }) {
+                        screenModel.updateFrog(frog._id, frogName)
+                    }, ) {
                         Column {
                             Text("name: ${frog.name}, \nid: ${frog._id}")
                             Text("age: ${frog?.age?.toString()}")

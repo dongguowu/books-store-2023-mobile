@@ -13,8 +13,8 @@ import com.lduboscq.appkickstarter.ui.theme.red.RedAppTheme
 public fun MainApp() {
     GreenAppTheme {
 
-        Navigator(BookStoreHomeScreen()) { navigator ->
-//            Navigator(FrogScreen()) { navigator ->
+//        Navigator(BookStoreHomeScreen()) { navigator ->
+            Navigator(FrogScreen()) { navigator ->
             SlideTransition(navigator)
         }
     }

@@ -5,8 +5,8 @@ import cafe.adriel.voyager.core.model.coroutineScope
 import com.lduboscq.appkickstarter.main.data.FrogRepositoryInterface
 import kotlinx.coroutines.launch
 
-class FrogScreenModel(private val repository: FrogRepositoryInterface)
-    : StateScreenModel<FrogScreenModel.State>(State.Init) {
+class FrogScreenModel(private val repository: FrogRepositoryInterface) :
+    StateScreenModel<FrogScreenModel.State>(State.Init) {
 
     sealed class State {
         object Init : State()
@@ -23,13 +23,16 @@ class FrogScreenModel(private val repository: FrogRepositoryInterface)
     }
 
     fun addFrog(name: String) {
-         coroutineScope.launch {
+        coroutineScope.launch {
             mutableState.value = State.Loading
-            mutableState.value = State.Result(frogList = repository.addFrog(
-                name = name,
-                age = 45,
-                species = "Green",
-                owner = "Jim"))
+            mutableState.value = State.Result(
+                frogList = repository.addFrog(
+                    name = name,
+                    age = 45,
+                    species = "Green",
+                    owner = "Jim"
+                )
+            )
         }
     }
 
@@ -40,4 +43,11 @@ class FrogScreenModel(private val repository: FrogRepositoryInterface)
         }
     }
 
+    fun updateFrog(id: String, name: String) {
+        coroutineScope.launch {
+            mutableState.value = State.Loading
+            mutableState.value =
+                State.Result(frogList = repository.updateFrog(id = id, name = name))
+        }
+    }
 }
