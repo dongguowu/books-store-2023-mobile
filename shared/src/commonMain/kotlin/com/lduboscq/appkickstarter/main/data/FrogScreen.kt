@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -56,18 +57,31 @@ class FrogScreen : Screen {
             if (state is FrogScreenModel.State.Result) {
 
                 for (frog in (state as FrogScreenModel.State.Result).frogList) {
-                    Button(onClick = {
-                        screenModel.updateFrog(frog._id, frogName)
-                    }, ) {
+
+                    Card() {
                         Column {
                             Text("name: ${frog.name}, \nid: ${frog._id}")
                             Text("age: ${frog?.age?.toString()}")
                             Text("Species: ${frog?.species}")
                             Text("Owner: ${frog?.owner}")
                         }
+                        Button(
+                            onClick = {
+                                screenModel.updateFrog(frog._id, frogName)
+                            },
+                            content = { Text("update ") }
+                        )
+                        Spacer(modifier = Modifier.height(9.dp))
 
+                        Button(
+                            onClick = {
+                                screenModel.deleteFrog(frog._id)
+                            },
+                            content = { Text("delete ") }
+                        )
+                        Spacer(modifier = Modifier.height(9.dp))
                     }
-                    Spacer(modifier = Modifier.height(9.dp))
+
 
                 }
             }
