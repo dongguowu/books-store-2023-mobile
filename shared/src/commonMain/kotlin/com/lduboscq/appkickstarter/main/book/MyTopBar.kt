@@ -1,4 +1,4 @@
-package com.lduboscq.appkickstarter.main
+package com.lduboscq.appkickstarter.main.book
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text

@@ -1,4 +1,4 @@
-package com.lduboscq.appkickstarter.main
+package com.lduboscq.appkickstarter.main.book
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
@@ -18,7 +18,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.lduboscq.appkickstarter.model.User
 
 @Composable
-fun MyBottomBar(count: Int, currentScreen: Route) {
+fun MyBottomBar(list: List<ShoppingCartLineData>, totalQuantity: Int, currentScreen: Route) {
     val navigator = LocalNavigator.currentOrThrow
     BottomAppBar(
         backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -26,25 +26,28 @@ fun MyBottomBar(count: Int, currentScreen: Route) {
         content = {
 
             // Home Icon
-            if (currentScreen !is Route.Home) {
-                IconButton(
-                    onClick = {
+            IconButton(
+                onClick = {
+                    if (currentScreen !is Route.Home) {
                         val user = User("Donggu")
                         navigator.push(screenRouter(Route.Home(user)))
                     }
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Home,
-                        contentDescription = "Back Home"
-                    )
+
                 }
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Home,
+                    contentDescription = "Back Home"
+                )
             }
 
             Spacer(modifier = Modifier.width(30.dp))
             // Shopping cart icon
             IconButton(
                 onClick = {
-                    navigator.push(screenRouter(Route.ShoppingCart(count)))
+                    if (currentScreen !is Route.ShoppingCart) {
+                        navigator.push(screenRouter(Route.ShoppingCart(list)))
+                    }
                 }
             ) {
                 Icon(
@@ -54,7 +57,7 @@ fun MyBottomBar(count: Int, currentScreen: Route) {
             }
 
             Text(
-                text = count.toString()
+                text = totalQuantity.toString()
             )
         }
     )

@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalResourceApi::class)
 
-package com.lduboscq.appkickstarter.main.screen
+package com.lduboscq.appkickstarter.main.book
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -18,6 +18,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -39,11 +40,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.lduboscq.appkickstarter.main.Image
-import com.lduboscq.appkickstarter.main.MyBottomBar
-import com.lduboscq.appkickstarter.main.MyTopBar
-import com.lduboscq.appkickstarter.main.Route
-import com.lduboscq.appkickstarter.main.screenRouter
-import com.lduboscq.appkickstarter.model.Book
+import com.lduboscq.appkickstarter.model.BookData
 import com.lduboscq.appkickstarter.model.User
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
@@ -55,34 +52,37 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
     override fun Content() {
 
 
-        val bookList = listOf(
-            Book(
-                "ad",
-                "head first kotlin",
-                "https://kotlinlang.org/docs/images/head-first-kotlin.jpeg"
-            ),
-            Book("ad", "joy of kotlin", "https://kotlinlang.org/docs/images/joy-of-kotlin.png"),
-            Book(
-                "ad", "kotlin in action", "https://kotlinlang.org/docs/images/kotlin-in-action.png"
-            ),
-            Book(
-                "ad",
-                "head first kotlin",
-                "https://kotlinlang.org/docs/images/head-first-kotlin.jpeg"
-            ),
-            Book("ad", "joy of kotlin", "https://kotlinlang.org/docs/images/joy-of-kotlin.png"),
-            Book(
-                "ad", "kotlin in action", "https://kotlinlang.org/docs/images/kotlin-in-action.png"
-            ),
-        )
+        val bookList = getBookList()
+
+
+        val cartLineList = remember { mutableListOf<ShoppingCartLineData>() }
+        var quantityInShoppingCart by remember { mutableStateOf(cartLineList.size) }
+
         var welcomeString = "welcome!"
         if (user != null) {
             welcomeString = "hi, ${user?.name}"
         }
         var infoText by remember { mutableStateOf(welcomeString) }
-        var numberOfItems by remember { mutableStateOf(0) }
-        fun addToCart(count: Int = 1) {
-            numberOfItems += count
+
+        fun addToCart(book: BookData, quantity: Int = 1) {
+
+            var cartLinInList = cartLineList.firstOrNull { it.bookId == book.id }
+
+            if (cartLinInList == null) {
+                cartLineList.add(
+                    ShoppingCartLineData(
+                        id = null,
+                        bookId = book.id.toString(),
+                        quantity = quantity,
+                        shoppingCartLine = null
+                    )
+                )
+            } else {
+                cartLinInList.quantity += quantity
+            }
+
+            quantityInShoppingCart = cartLineList.sumOf { it.quantity }
+
         }
 
         val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -91,7 +91,13 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
         Scaffold(
             topBar = { MyTopBar(infoText, false, scrollBehavior) },
 
-            bottomBar = { MyBottomBar(count = numberOfItems, currentScreen = Route.Home(user)) },
+            bottomBar = {
+                MyBottomBar(
+                    list = cartLineList,
+                    totalQuantity = quantityInShoppingCart,
+                    currentScreen = Route.Home(user)
+                )
+            },
 
             content = { paddingValues ->
                 Column(
@@ -99,7 +105,7 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
                     modifier = Modifier.padding(paddingValues),
                 ) {
                     SearchBook(updateInfo = { infoText = it }, updateQueryString = {})
-                    BooksLazyColumn(bookList = bookList, addToCart = { addToCart() })
+                    BooksLazyColumn(bookList = bookList, addToCart = { addToCart(it) })
                 }
             },
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -124,7 +130,7 @@ fun SearchBook(updateQueryString: (String) -> Unit, updateInfo: (String) -> Unit
 }
 
 @Composable
-fun BooksLazyColumn(bookList: List<Book>, addToCart: () -> Unit) {
+fun BooksLazyColumn(bookList: List<BookData>, addToCart: (book: BookData) -> Unit) {
     LazyColumn {
 
         var i = 2;
@@ -138,7 +144,7 @@ fun BooksLazyColumn(bookList: List<Book>, addToCart: () -> Unit) {
                             backgroundColor = MaterialTheme.colorScheme.primaryContainer,
                             book = book,
                             addToCart = {
-                                addToCart()
+                                addToCart(book)
                             })
                     }
 
@@ -148,7 +154,7 @@ fun BooksLazyColumn(bookList: List<Book>, addToCart: () -> Unit) {
                             backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
                             book = book,
                             addToCart = {
-                                addToCart()
+                                addToCart(book)
                             })
                     }
 
@@ -158,7 +164,7 @@ fun BooksLazyColumn(bookList: List<Book>, addToCart: () -> Unit) {
                             backgroundColor = MaterialTheme.colorScheme.tertiaryContainer,
                             book = book,
                             addToCart = {
-                                addToCart()
+                                addToCart(book)
                             })
                     }
                 }
@@ -176,7 +182,12 @@ picture and favorite icon button , add to shopping cart icon button.
 @param addToCart A callback function to handle adding the book to the shopping cart.
  */
 @Composable
-fun BookCard(textColor: Color, backgroundColor: Color, book: Book, addToCart: () -> Unit) {
+fun BookCard(
+    textColor: Color,
+    backgroundColor: Color,
+    book: BookData,
+    addToCart: (book: BookData) -> Unit
+) {
     val navigator = LocalNavigator.currentOrThrow
     Card(
         modifier = Modifier.size(width = 400.dp, height = 200.dp).padding(15.dp),
@@ -218,6 +229,16 @@ fun BookCard(textColor: Color, backgroundColor: Color, book: Book, addToCart: ()
                             imageVector = Icons.Outlined.Favorite,
                             contentDescription = "Favorite",
                             tint = favoriteIconTint
+                        )
+                    }, text = { Text("") })
+
+                    // add shopping icon
+                    ExtendedFloatingActionButton(onClick = {
+                        addToCart(book)
+                    }, backgroundColor = MaterialTheme.colorScheme.primary, icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Add,
+                            contentDescription = "Add to shopping cart",
                         )
                     }, text = { Text("") })
 

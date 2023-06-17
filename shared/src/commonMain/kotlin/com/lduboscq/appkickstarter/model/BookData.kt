@@ -1,10 +1,5 @@
 package com.lduboscq.appkickstarter.model
 
-import io.realm.kotlin.types.RealmObject
-import io.realm.kotlin.types.RealmUUID
-import io.realm.kotlin.types.annotations.Index
-import io.realm.kotlin.types.annotations.PrimaryKey
-
 
 //class Book: RealmObject {
 //    @PrimaryKey
@@ -24,4 +19,4 @@ import io.realm.kotlin.types.annotations.PrimaryKey
  *    the information in case we need it.
  *  We'll use id instead of _id since it is more general
  */
-data class Book(val id: String, val title: String, val imagePath: String)
+data class BookData(val id: String, val title: String, val imagePath: String)
