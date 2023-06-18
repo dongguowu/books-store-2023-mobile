@@ -30,3 +30,5 @@
 
 - use Scaffold as the whole layout.
 - mainly use Column and Row in Scaffold body
+
+message = "## Feature\n" + "\n" + "- Model-View-ViewModel \n" + "- AppKickstarter template\n" + "- Voyager Screen/ScreenModel\n" + "- Mongo Realm Sync database\n" + "- Stateless components\n" + "- Material design\n" + "- Layouts consistency"

@@ -1,9 +1,8 @@
 package com.lduboscq.appkickstarter.main.ui
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -17,10 +16,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -36,74 +31,69 @@ import com.lduboscq.appkickstarter.model.User
 @Composable
 fun MyBottomBar(quantity: Int, currentScreen: Route, showCart: Boolean = true) {
     val navigator = LocalNavigator.currentOrThrow
-    BottomAppBar(
-        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+    BottomAppBar(contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
         containerColor = MaterialTheme.colorScheme.surface,
         tonalElevation = 36.dp,
+
         actions = {
-
-
             IconButton(
                 onClick = {
                     if (currentScreen !is Route.Home) {
                         val user = User("Dongguo")
                         navigator.push(screenRouter(Route.Home(user)))
                     }
-                }
+                },
+                enabled = currentScreen !is Route.Home
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Home,
                     contentDescription = "Back Home",
                 )
             }
-            var count by remember { mutableStateOf(0) }
-            IconButton(onClick = {
-                if (currentScreen !is Route.About) {
-                    count += 1
-                    navigator.push(screenRouter(Route.About(count)))
-                }
-            }) {
+            IconButton(
+                onClick = {
+                    if (currentScreen !is Route.About) {
+                        val feature =
+                            "## Feature\n" + "\n" + "- Model-View-ViewModel \n" + "- AppKickstarter template\n" + "- Voyager Screen/ScreenModel\n" + "- Mongo Realm Sync database\n" + "- Stateless components\n" + "- Material design\n" + "- Layouts consistency"
+                        navigator.push(screenRouter(Route.About(feature)))
+                    }
+                },
+                enabled = currentScreen !is Route.About
+            ) {
                 Icon(
-                    Icons.Outlined.Info,
+                    Icons.Outlined.Build,
                     contentDescription = "go to About screen",
                 )
             }
         },
         floatingActionButton = {
             if (showCart) {
-                FloatingActionButton(
-                    onClick = {
-                        if (currentScreen !is Route.ShoppingCart) {
-                            navigator.push(screenRouter(Route.ShoppingCart(quantity)))
-                        }
-                    },
+                FloatingActionButton(onClick = {
+                    if (currentScreen !is Route.ShoppingCart) {
+                        navigator.push(screenRouter(Route.ShoppingCart(quantity)))
+                    }
+                },
                     containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
                     elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),
                     content = {
-                        BadgedBox(
-                            badge = {
-                                if (quantity >= 1) {
-                                    Badge {
-                                        Text(
-                                            quantity.toString(),
-                                            modifier = Modifier.semantics {
-                                                contentDescription =
-                                                    "$quantity books in shopping cart"
-                                            },
-                                            fontSize = 16.sp
-                                        )
-                                    }
+                        BadgedBox(badge = {
+                            if (quantity >= 1) {
+                                Badge {
+                                    Text(
+                                        quantity.toString(), modifier = Modifier.semantics {
+                                            contentDescription = "$quantity books in shopping cart"
+                                        }, fontSize = 16.sp
+                                    )
                                 }
-                            }) {
+                            }
+                        }) {
                             Icon(
                                 Icons.Outlined.ShoppingCart,
                                 contentDescription = "Display the quantity of books in shopping cart"
                             )
                         }
-                    }
-                )
+                    })
             }
-        }
-    )
+        })
 }
 

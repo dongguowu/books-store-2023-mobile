@@ -47,10 +47,10 @@ import com.lduboscq.appkickstarter.ShoppingCartRepositoryRemote
 import com.lduboscq.appkickstarter.ShoppingCartScreenModel
 import com.lduboscq.appkickstarter.main.Route
 import com.lduboscq.appkickstarter.main.screenRouter
-import com.lduboscq.appkickstarter.main.ui.Image
 import com.lduboscq.appkickstarter.main.shoppingcart.AddOrSubstrateQuantity
 import com.lduboscq.appkickstarter.main.shoppingcart.CartLine
 import com.lduboscq.appkickstarter.main.shoppingcart.CartLineData
+import com.lduboscq.appkickstarter.main.ui.Image
 import com.lduboscq.appkickstarter.main.ui.MyBottomBar
 import com.lduboscq.appkickstarter.main.ui.MyTopBar
 import com.lduboscq.appkickstarter.model.User
@@ -186,7 +186,7 @@ fun BookCard(
                 Text(
                     text = book.title,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
+                    fontSize = 24.sp,
                     textAlign = TextAlign.Start,
                 )
 
