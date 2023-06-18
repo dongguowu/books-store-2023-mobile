@@ -1,6 +1,7 @@
 package com.lduboscq.appkickstarter.main.book
 
 import cafe.adriel.voyager.core.screen.Screen
+import com.lduboscq.appkickstarter.main.data.FrogScreen
 import com.lduboscq.appkickstarter.main.screen.AboutScreen
 import com.lduboscq.appkickstarter.main.screen.DetailScreen
 
@@ -23,7 +24,7 @@ fun screenRouter(screen: Route): Screen {
         }
 
         is Route.ShoppingCart -> {
-            ShoppingCartScreen(list = screen.list)
+            FrogScreen()
         }
     }
 }

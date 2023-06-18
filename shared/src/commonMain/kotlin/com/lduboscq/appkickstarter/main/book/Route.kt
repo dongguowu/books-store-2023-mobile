@@ -8,5 +8,5 @@ sealed class Route {
     data class Home(val user: User?) : Route()
     data class About(val count: Int) : Route()
     data class Detail(val book: BookData) : Route()
-    data class ShoppingCart(val list: List<ShoppingCartLineData>) : Route()
+    data class ShoppingCart(val quantity: Int) : Route()
 }

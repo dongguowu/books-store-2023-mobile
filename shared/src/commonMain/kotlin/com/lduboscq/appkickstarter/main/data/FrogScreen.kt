@@ -1,8 +1,13 @@
-package com.lduboscq.appkickstarter
+package com.lduboscq.appkickstarter.main.data
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -10,6 +15,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,14 +26,20 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import com.lduboscq.appkickstarter.Frog
+import com.lduboscq.appkickstarter.FrogData
+import com.lduboscq.appkickstarter.FrogRepositoryRemote
+import com.lduboscq.appkickstarter.FrogScreenModel
+import com.lduboscq.appkickstarter.main.Image
 import com.lduboscq.appkickstarter.main.book.MyBottomBar
 import com.lduboscq.appkickstarter.main.book.MyTopBar
 import com.lduboscq.appkickstarter.main.book.Route
-import com.lduboscq.appkickstarter.main.book.ShoppingCartLineData
 import com.lduboscq.appkickstarter.main.book.getBookList
+import com.lduboscq.appkickstarter.main.book.screenRouter
 
 class FrogScreen : Screen {
-
 
     private val bookList = getBookList()
 
@@ -37,16 +49,8 @@ class FrogScreen : Screen {
         val screenModel = rememberScreenModel() { FrogScreenModel(FrogRepositoryRemote()) }
         val state by screenModel.state.collectAsState()
 
-        screenModel.getFrog("")
-
-
-        val cartLineList = mutableListOf<ShoppingCartLineData>()
-        val list = mutableListOf<Frog>()
-
-        if (state is FrogScreenModel.State.Result) {
-            for (frog in (state as FrogScreenModel.State.Result).frogList) {
-                cartLineList.add(frog.toData())
-            }
+        LaunchedEffect(true) {
+            screenModel.getFrog("")
         }
 
         var message by remember { mutableStateOf("") }
@@ -57,6 +61,11 @@ class FrogScreen : Screen {
             else -> {}
         }
 
+        var quantity by remember { mutableStateOf(0) }
+        if (state is FrogScreenModel.State.Result) {
+            quantity = (state as FrogScreenModel.State.Result).frogList.sumOf { frog -> frog.age }
+        }
+
         val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -65,60 +74,72 @@ class FrogScreen : Screen {
 
             bottomBar = {
                 MyBottomBar(
-                    list = cartLineList,
-                    totalQuantity = list.size,
-                    currentScreen = Route.ShoppingCart(cartLineList)
+                    quantity = quantity,
+                    currentScreen = Route.ShoppingCart(quantity)
                 )
             },
 
             content = {
                 if (state is FrogScreenModel.State.Result) {
-                    val list = (state as FrogScreenModel.State.Result).frogList
-                    CartLazyColumn(
-                        cartLineList = list,
-                        update = { frog -> screenModel.updateFrog(frog) },
-                        delete = { id -> screenModel.deleteFrog(id) }
+                    LazyColumn {
+                        for (frog in (state as FrogScreenModel.State.Result).frogList) {
+                            item {
+                                CartLineCard(
+                                    frog = frog,
+                                    update = { frog -> screenModel.updateFrog(frog) },
+                                    delete = { id -> screenModel.deleteFrog(id) }
 
-                    )
+                                )
+                            }
+                        }
+                    }
                 }
             }
         )
     }
 
     @Composable
-    fun CartLazyColumn(
-        cartLineList: List<Frog>,
+    fun CartLineCard(
+        frog: Frog,
         update: (frog: FrogData) -> Unit,
         delete: (id: String) -> Unit
     ) {
-        for (frog in cartLineList) {
-
-            Card() {
-                Column {
-                    Text("name: ${frog.name}")
+        val navigator = LocalNavigator.currentOrThrow
+        val book = bookList.firstOrNull { frog.name == it.id } ?: return
+        Card() {
+            Column {
+                Text("name: ${frog.name}")
+                Row {
+                    Image(
+                        url = book.imagePath,
+                        modifier = Modifier.size(width = 120.dp, height = 180.dp).padding(15.dp)
+                            .clickable(onClick = {
+                                navigator.push(screenRouter(Route.Detail(book)))
+                            })
+                    )
+                    Button(
+                        content = { Text("+") },
+                        onClick = {
+                            update(FrogData(id = frog._id, age = frog.age + 1))
+                        },
+                    )
+                    Spacer(modifier = Modifier.height(9.dp))
                     Text("age: ${frog?.age?.toString()}")
+                    Spacer(modifier = Modifier.height(9.dp))
+                    Button(
+                        content = { Text("-") },
+                        onClick = {
+                            var ageToUpdate = frog.age - 1
+                            if (ageToUpdate <= 0) {
+                                delete(frog._id)
+                            } else {
+                                update(FrogData(id = frog._id, age = ageToUpdate))
+                            }
+                        },
+                    )
                 }
-                Button(
-                    content = { Text("+") },
-                    onClick = {
-                        update(FrogData(id = frog._id, age = frog.age + 1))
-                    },
-                )
-                Spacer(modifier = Modifier.height(9.dp))
-                Button(
-                    content = { Text("-") },
-                    onClick = {
-                        var ageToUpdate = frog.age - 1
-                        if (ageToUpdate <= 0) {
-                            delete(frog._id)
-                        } else {
-                            update(FrogData(id = frog._id, age = ageToUpdate))
-                        }
-                    },
-                )
             }
+
         }
     }
-
-
 }

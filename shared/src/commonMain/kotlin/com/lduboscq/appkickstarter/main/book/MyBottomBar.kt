@@ -18,7 +18,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.lduboscq.appkickstarter.model.User
 
 @Composable
-fun MyBottomBar(list: List<ShoppingCartLineData>, totalQuantity: Int, currentScreen: Route) {
+fun MyBottomBar(quantity: Int, currentScreen: Route) {
     val navigator = LocalNavigator.currentOrThrow
     BottomAppBar(
         backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -46,7 +46,7 @@ fun MyBottomBar(list: List<ShoppingCartLineData>, totalQuantity: Int, currentScr
             IconButton(
                 onClick = {
                     if (currentScreen !is Route.ShoppingCart) {
-                        navigator.push(screenRouter(Route.ShoppingCart(list)))
+                        navigator.push(screenRouter(Route.ShoppingCart(quantity)))
                     }
                 }
             ) {
@@ -57,7 +57,7 @@ fun MyBottomBar(list: List<ShoppingCartLineData>, totalQuantity: Int, currentScr
             }
 
             Text(
-                text = totalQuantity.toString()
+                text = quantity.toString()
             )
         }
     )

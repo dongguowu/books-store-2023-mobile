@@ -4,9 +4,8 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
-import com.lduboscq.appkickstarter.main.book.BookStoreHomeScreen
+import com.lduboscq.appkickstarter.main.data.FrogScreen
 import com.lduboscq.appkickstarter.ui.theme.green.GreenAppTheme
-import com.lduboscq.appkickstarter.ui.theme.red.RedAppTheme
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable

@@ -68,9 +68,8 @@ internal class ShoppingCartScreen(private var list: List<ShoppingCartLineData>) 
             // Show a shopping cart icon and the number of items on cart
             bottomBar = {
                 MyBottomBar(
-                    list = list,
-                    totalQuantity = list.size,
-                    currentScreen = Route.ShoppingCart(list)
+                    quantity = list.size,
+                    currentScreen = Route.ShoppingCart(list.size)
                 )
             },
 

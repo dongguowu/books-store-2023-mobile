@@ -93,8 +93,7 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
 
             bottomBar = {
                 MyBottomBar(
-                    list = cartLineList,
-                    totalQuantity = quantityInShoppingCart,
+                    quantity = quantityInShoppingCart,
                     currentScreen = Route.Home(user)
                 )
             },
