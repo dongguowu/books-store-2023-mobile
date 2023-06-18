@@ -13,7 +13,7 @@ fun screenRouter(screen: Route): Screen {
         }
 
         is Route.About -> {
-            if (screen.count == 0) {
+            if (screen.count == 1) {
                 AboutScreen(message = "Welcome")
             } else {
                 AboutScreen(message = "Welcome Back")

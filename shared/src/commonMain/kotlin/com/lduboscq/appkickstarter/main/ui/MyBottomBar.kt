@@ -1,10 +1,9 @@
 package com.lduboscq.appkickstarter.main.ui
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -18,6 +17,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -31,29 +34,21 @@ import com.lduboscq.appkickstarter.model.User
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyBottomBar(quantity: Int, currentScreen: Route) {
+fun MyBottomBar(quantity: Int, currentScreen: Route, showCart: Boolean = true) {
     val navigator = LocalNavigator.currentOrThrow
     BottomAppBar(
         contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
         containerColor = MaterialTheme.colorScheme.surface,
         tonalElevation = 36.dp,
         actions = {
-            IconButton(onClick = { /* doSomething() */ }) {
-                Icon(Icons.Filled.Check, contentDescription = "Localized description")
-            }
-            IconButton(onClick = { /* doSomething() */ }) {
-                Icon(
-                    Icons.Filled.Edit,
-                    contentDescription = "Localized description",
-                )
-            }
+
+
             IconButton(
                 onClick = {
                     if (currentScreen !is Route.Home) {
                         val user = User("Dongguo")
                         navigator.push(screenRouter(Route.Home(user)))
                     }
-
                 }
             ) {
                 Icon(
@@ -61,39 +56,53 @@ fun MyBottomBar(quantity: Int, currentScreen: Route) {
                     contentDescription = "Back Home",
                 )
             }
+            var count by remember { mutableStateOf(0) }
+            IconButton(onClick = {
+                if (currentScreen !is Route.About) {
+                    count += 1
+                    navigator.push(screenRouter(Route.About(count)))
+                }
+            }) {
+                Icon(
+                    Icons.Outlined.Info,
+                    contentDescription = "go to About screen",
+                )
+            }
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    if (currentScreen !is Route.ShoppingCart) {
-                        navigator.push(screenRouter(Route.ShoppingCart(quantity)))
-                    }
-                },
-                containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
-                elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),
-                content = {
-                    BadgedBox(
-                        badge = {
-                            if (quantity >= 1) {
-                                Badge {
-                                    Text(
-                                        quantity.toString(),
-                                        modifier = Modifier.semantics {
-                                            contentDescription = "$quantity books in shopping cart"
-                                        },
-                                        fontSize = 16.sp
-                                    )
+            if (showCart) {
+                FloatingActionButton(
+                    onClick = {
+                        if (currentScreen !is Route.ShoppingCart) {
+                            navigator.push(screenRouter(Route.ShoppingCart(quantity)))
+                        }
+                    },
+                    containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
+                    elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),
+                    content = {
+                        BadgedBox(
+                            badge = {
+                                if (quantity >= 1) {
+                                    Badge {
+                                        Text(
+                                            quantity.toString(),
+                                            modifier = Modifier.semantics {
+                                                contentDescription =
+                                                    "$quantity books in shopping cart"
+                                            },
+                                            fontSize = 16.sp
+                                        )
+                                    }
                                 }
-                            }
-                        }) {
-                        Icon(
-                            Icons.Outlined.ShoppingCart,
-                            contentDescription = "Display the quantity of books in shopping cart"
-                        )
+                            }) {
+                            Icon(
+                                Icons.Outlined.ShoppingCart,
+                                contentDescription = "Display the quantity of books in shopping cart"
+                            )
+                        }
                     }
-                }
-
-            )
+                )
+            }
         }
     )
 }
