@@ -35,7 +35,7 @@ class FrogRepositoryRemote() : FrogRepositoryInterface {
                         "_id == $0",
                         user.id
                     ),
-                    name = "frog_databse",
+                    name = "FrogSub",
                     updateExisting = true
                 )
             }
