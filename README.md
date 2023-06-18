@@ -1,45 +1,32 @@
-# Welcome to KMPStarterOS, a minimalist but yet useful open source version of [AppKickstarter](https://appkickstarter.com)
+# Assignment #2: Multi-Screen CRUD Kotlin Multiplatform / Compose Multiplatform App
 
-If you just need to support android and ios with no backend requirement 
-(just offline data) and no need for in app purchases or fancy features 
-like auth and onboarding then you are on the right place and this open source template is good for you.
+## [Dongguo Wu](https://github.com/dongguowu)
 
-Otherwise, if you need more capabilities please check out our premium template [AppKickstarter](https://appkickstarter.com) which is on the same stack but with a lot more of content.
+### Based on [AppKickstarter Template](https://github.com/JetBrains/compose-multiplatform-ios-android-template)
 
-![gif](kmp.gif)
+ <img src="readme_images/Screenshot.png" alt="Image Description" width="300" height="">
 
-## Platform supported for KMPStarterOS
+## Functionality
 
-- Android
-- iOS 
+### Two functional screens
 
-## Architecture 
+- Bookstore Screen, display a list of book cards where book can add to shopping cart, and update shopping cart info.
+- Shopping Cart Screen, display all items related to books added to cart and manage them.
 
-- Shared KMM library
-- Android app
-- iOS app
+### Implement CRUD
 
-## Libraries already configured
+#### 4 (CRUD) may work for a single item at a time
 
-### IOS
+- Create, add a book to shopping cart
+- Read, get an shopping cart item by book id
+- Update, update the quantity of item
+- Delete, delete the item from shopping cart
 
-- SwiftUI for iOS UI
+#### 1 (R) must display a list (i.e., getAll)
 
-### Android
+- Display all items on Shopping cart screen
 
-- Jetpack Compose for Android UI
-- Android workmanager
-- Android Compose navigation
-- Accompanist (systemuicontroller, permissions)
+## Layout
 
-### Multiplatform
- 
-- Compose multiplatform for shared UI
-- Multiplatform localization (Moko resources)
-- Multiplatform logging (Napier)
-- Multiplatform dependency injection (Koin)
-- Multiplatform database (SqlDelight)
-- Multiplatform key-value storage (russhwolf:multiplatform-settings)
-- Multiplatform dates (Kotlinx-datetime)
-- Multiplatform http client (Ktor)
-- Multiplatform navigation (Voyager)
+- use Scaffold as the whole layout.
+- mainly use Column and Row in Scaffold body
