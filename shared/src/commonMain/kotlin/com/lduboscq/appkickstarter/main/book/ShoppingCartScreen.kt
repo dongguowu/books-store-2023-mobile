@@ -45,7 +45,8 @@ internal class ShoppingCartScreen(private var list: List<ShoppingCartLineData>) 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val screenModel = rememberScreenModel { ShoppingCartScreenModel(ShoppingCartRepositoryRealmSync()) }
+        val screenModel =
+            rememberScreenModel { ShoppingCartScreenModel(ShoppingCartRepositoryRealmSync()) }
         val state by screenModel.state.collectAsState()
 
         var message by remember { mutableStateOf("") }
@@ -75,34 +76,31 @@ internal class ShoppingCartScreen(private var list: List<ShoppingCartLineData>) 
 
             content = {
                 Button(onClick = {
-                    var item = list[0]
-                    screenModel.add(item)
+                    screenModel.getAll()
+//                    var item = list[0]
+//                    screenModel.add(item)
 //                    screenModel.getAll()
-//                    for (cartLine in list) {
-//                        screenModel.add(cartLine)
-//                    }
+                    for (cartLine in list) {
+                        screenModel.add(cartLine)
+                    }
                 }) {
                     Text("add all cart line")
                 }
 
                 if (state is ShoppingCartScreenModel.State.Result) {
-                    val cartLineList = remember { mutableListOf<ShoppingCartLineData>() }
+
+                    val cartLineList = mutableListOf<ShoppingCartLineData>()
                     for (carline in (state as ShoppingCartScreenModel.State.Result).list) {
                         cartLineList.add(carline.toData())
                     }
 
-//                    cartLineList.add((state as ShoppingCartScreenModel.State.Result).list[0].toData())
-                    BooksLazyColumn(cartLineList = cartLineList) { updateLine(it) }
+                    BooksLazyColumn(cartLineList = cartLineList) { screenModel.update(it) }
                 }
 
             }
         )
 
-    }
 
-    private fun updateLine(cartLine: ShoppingCartLineData) {
-        cartLine.quantity++
-        println("****************************************\n" + "shopping cart has ${cartLine.quantity} items")
     }
 
 
@@ -113,107 +111,83 @@ internal class ShoppingCartScreen(private var list: List<ShoppingCartLineData>) 
     ) {
         LazyColumn {
 
-            var i = 2;
             for (cartLine in cartLineList) {
                 item {
-                    var n = i++ % 3
-                    when (n) {
-                        0 -> {
-                            BookCard(
-                                textColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                                backgroundColor = MaterialTheme.colorScheme.primaryContainer,
-                                cartLine = cartLine,
-                                updateLine = {
-                                    updateCartLine(cartLine)
-                                })
-                        }
 
-                        1 -> {
-                            BookCard(
-                                textColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-                                cartLine = cartLine,
-                                updateLine = {
-                                    updateCartLine(cartLine)
-                                })
-                        }
-
-                        2 -> {
-                            BookCard(
-                                textColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                                backgroundColor = MaterialTheme.colorScheme.tertiaryContainer,
-                                cartLine = cartLine,
-                                updateLine = {
-                                    updateCartLine(cartLine)
-                                })
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-
-    /**
-
-    Represents a card component for displaying book information including title,
-    picture and favorite icon button , add to shopping cart icon button.
-    @param book The book object to display.
-    @param addToCart A callback function to handle adding the book to the shopping cart.
-     */
-    @Composable
-    fun BookCard(
-        textColor: Color,
-        backgroundColor: Color,
-        cartLine: ShoppingCartLineData,
-        updateLine: (cartLine: ShoppingCartLineData) -> Unit
-    ) {
-        val navigator = LocalNavigator.currentOrThrow
-        val book = bookList.first { it.id == cartLine.bookId }
-
-        Card(
-            modifier = Modifier.size(width = 400.dp, height = 200.dp).padding(15.dp),
-            backgroundColor = backgroundColor
-        ) {
-            Row {
-
-                Image(
-                    url = book.imagePath,
-                    modifier = Modifier.size(width = 120.dp, height = 180.dp).padding(15.dp)
-                        .clickable(onClick = {
-                            navigator.push(screenRouter(Route.Detail(book)))
+                    BookCard(
+                        textColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                        backgroundColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        cartLine = cartLine,
+                        updateLine = {
+                            cartLine.quantity += 1
+                            updateCartLine(cartLine)
                         })
-                )
-                Column(
-                    modifier = Modifier.padding(9.dp, 15.dp, 9.dp, 9.dp),
-                ) {
-                    Text(
-                        text = book.title,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
-                        color = textColor,
-                        textAlign = TextAlign.Start,
-                    )
-
-                    Spacer(modifier = Modifier.height(60.dp).width(60.dp))
-
-                    Row {
-
-                        Text(cartLine.quantity.toString())
-
-                        // add shopping icon
-                        ExtendedFloatingActionButton(onClick = {
-                            updateLine(cartLine)
-                        }, backgroundColor = MaterialTheme.colorScheme.primary, icon = {
-                            Icon(
-                                imageVector = Icons.Outlined.Add,
-                                contentDescription = "Add to shopping cart",
-                            )
-                        }, text = { Text("") })
-
-                    }
                 }
             }
         }
     }
+
+
+/**
+
+Represents a card component for displaying book information including title,
+picture and favorite icon button , add to shopping cart icon button.
+@param book The book object to display.
+@param addToCart A callback function to handle adding the book to the shopping cart.
+ */
+@Composable
+fun BookCard(
+    textColor: Color,
+    backgroundColor: Color,
+    cartLine: ShoppingCartLineData,
+    updateLine: (cartLine: ShoppingCartLineData) -> Unit
+) {
+    val navigator = LocalNavigator.currentOrThrow
+    val book = bookList.first { it.id == cartLine.bookId }
+    var quantity by remember { mutableStateOf(cartLine.quantity) }
+    Card(
+        modifier = Modifier.size(width = 400.dp, height = 200.dp).padding(15.dp),
+        backgroundColor = backgroundColor
+    ) {
+        Row {
+
+            Image(
+                url = book.imagePath,
+                modifier = Modifier.size(width = 120.dp, height = 180.dp).padding(15.dp)
+                    .clickable(onClick = {
+                        navigator.push(screenRouter(Route.Detail(book)))
+                    })
+            )
+            Column(
+                modifier = Modifier.padding(9.dp, 15.dp, 9.dp, 9.dp),
+            ) {
+                Text(
+                    text = book.title,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = textColor,
+                    textAlign = TextAlign.Start,
+                )
+
+                Spacer(modifier = Modifier.height(60.dp).width(60.dp))
+
+                Row {
+
+                    Text(quantity.toString())
+
+                    // add shopping icon
+                    ExtendedFloatingActionButton(onClick = {
+                        updateLine(cartLine)
+                    }, backgroundColor = MaterialTheme.colorScheme.primary, icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Add,
+                            contentDescription = "Add to shopping cart",
+                        )
+                    }, text = { Text("") })
+
+                }
+            }
+        }
+    }
+}
 }

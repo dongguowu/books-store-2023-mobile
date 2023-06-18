@@ -4,7 +4,6 @@ import io.realm.kotlin.Realm
 import io.realm.kotlin.mongodb.sync.ConnectionState
 import io.realm.kotlin.mongodb.syncSession
 import io.realm.kotlin.notifications.ResultsChange
-import io.realm.kotlin.types.RealmUUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -34,9 +33,10 @@ abstract class ShoppingCartRepositoryRealm : ShoppingCartRepositoryInterface {
             setupRealmSync()
         }
 
+        var list = realm.query(ShoppingCartLine::class).find()
+        println("*******************************************************\n${list.size}")
         return realm.query(ShoppingCartLine::class).find()
     }
-
 
 
     override suspend fun add(line: ShoppingCartLineData): List<ShoppingCartLine> {
@@ -53,15 +53,12 @@ abstract class ShoppingCartRepositoryRealm : ShoppingCartRepositoryInterface {
             return getAll()
         }
 
-        var lineDb: ShoppingCartLine? = null
 
         line.bookId?.let { inputBookId ->
-            realm.write {
-                lineDb = this.copyToRealm(ShoppingCartLine().apply {
-                    _id = line?.id ?: RealmUUID.random().toString()
-                    bookId = inputBookId
-                    quantity = line.quantity
-                })
+            realm.writeBlocking {
+                val frog: ShoppingCartLine = this.copyToRealm(ShoppingCartLine())
+                frog.bookId = inputBookId
+                frog.quantity = line.quantity
             }
         }
 
@@ -83,7 +80,18 @@ abstract class ShoppingCartRepositoryRealm : ShoppingCartRepositoryInterface {
     }
 
     override suspend fun update(line: ShoppingCartLineData): List<ShoppingCartLine> {
-        TODO("Not yet implemented")
+        if (!this::realm.isInitialized) {
+            setupRealmSync()
+        }
+
+
+        realm.writeBlocking {
+            val frogDb = query(ShoppingCartLine::class, "_id == $0", line.id).first().find()
+            if (frogDb == null) {
+                println("****************************************\n" + "not found frog(id= ${line.id}}")
+            }
+            frogDb?.quantity = line.quantity
+        }
         return getAll()
     }
 

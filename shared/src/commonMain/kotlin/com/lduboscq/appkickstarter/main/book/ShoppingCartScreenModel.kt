@@ -48,11 +48,11 @@ class ShoppingCartScreenModel(private val repository: ShoppingCartRepositoryInte
 //        }
 //    }
 //
-//    fun updateFrog(id: String, name: String) {
-//        coroutineScope.launch {
-//            mutableState.value = State.Loading
-//            mutableState.value =
-//                State.Result(list = repository.updateFrog(id = id, name = name))
-//        }
-//    }
+    fun update(line: ShoppingCartLineData) {
+        coroutineScope.launch {
+            mutableState.value = State.Loading
+            mutableState.value =
+                State.Result(list = repository.update(line))
+        }
+    }
 }
