@@ -11,17 +11,17 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -51,7 +52,6 @@ import com.lduboscq.appkickstarter.main.data.CartLineData
 import com.lduboscq.appkickstarter.model.BookData
 import com.lduboscq.appkickstarter.model.User
 
-
 internal class BookStoreHomeScreen(var user: User? = null) : Screen {
 
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
@@ -64,8 +64,12 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
 
 
         // Local static books data
-        val bookList = getBookList()
-
+        var bookList = getBookList()
+        var bookListState = remember {
+            bookList.toMutableStateList()
+        }
+        LaunchedEffect(Unit) {
+        }
 
         // Message
         var messageOnTopBar by remember { mutableStateOf("") }
@@ -80,6 +84,7 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
         LaunchedEffect(true) {
             screenModel.getFrog("")
         }
+
         var quantity by remember { mutableStateOf(0) }
         if (state is FrogScreenModel.State.Result) {
             quantity =
@@ -103,14 +108,32 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(paddingValues),
                 ) {
-                    SearchBook(updateInfo = { messageOnTopBar = it }, updateQueryString = {})
 
+                    var queryBookstring = ""
+                    OutlinedTextField(
+                        value = queryBookstring,
+                        onValueChange = {
+                            if (it.length >= 3) {
+                                messageOnTopBar = it.toString()
+//                                bookListState = bookList.filter { book -> book.title.indexOf(it) != -1 } as SnapshotStateList<BookData>
+                            } else {
+//                                bookListState = getBookList() as SnapshotStateList<BookData>
+                            }
+                        },
+                        label = {
+                            Icon(
+                                Icons.Outlined.Search,
+                                contentDescription = "Search books",
+                            )
+                        }
+                    )
                     LazyColumn {
-                        for (book in bookList) {
+                        for (book in bookListState) {
                             item {
                                 var cartLineList: List<CartLine>? = null
                                 if (state is FrogScreenModel.State.Result) {
-                                    cartLineList = (state as FrogScreenModel.State.Result).cartLineList
+                                    cartLineList =
+                                        (state as FrogScreenModel.State.Result).cartLineList
                                 }
                                 BookCard(
                                     book = book,
@@ -191,14 +214,19 @@ fun BookCard(
                             update = { addToCartOrUpdate(it) },
                             delete = { removeFromCat(it) })
                     } else {
-                        ExtendedFloatingActionButton(onClick = {
-                            addToCartOrUpdate(CartLineData(bookId = book.id, quantity = 1))
-                        }, icon = {
+
+
+                        SmallFloatingActionButton(
+                            onClick = {
+                                addToCartOrUpdate(CartLineData(bookId = book.id, quantity = 1))
+                            }
+                        ) {
                             Icon(
-                                imageVector = Icons.Outlined.Add,
-                                contentDescription = "Add to shopping cart",
+                                Icons.Outlined.ShoppingCart,
+                                contentDescription = "Localized description",
                             )
-                        }, text = { Text("") })
+                        }
+
                     }
 
                 }
@@ -210,16 +238,23 @@ fun BookCard(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBook(updateQueryString: (String) -> Unit, updateInfo: (String) -> Unit) {
-    var string = ""
-    TextField(
-        value = string,
+fun SearchBook(filterBookList: (String) -> Unit, updateMessageOnTopBar: (String) -> Unit) {
+    var queryBookstring = ""
+
+    OutlinedTextField(
+        value = queryBookstring,
         onValueChange = {
-            updateQueryString(it)
-            updateInfo("Found book related $it")
+//            queryBookstring = it
+            if (it.length >= 3) {
+                filterBookList(it)
+                updateMessageOnTopBar("Finding book $it")
+            }
         },
-        singleLine = true,
-        label = { Text("Enter book's title") },
-        shape = MaterialTheme.shapes.large
+        label = {
+            Icon(
+                Icons.Outlined.Search,
+                contentDescription = "Search books",
+            )
+        }
     )
 }
