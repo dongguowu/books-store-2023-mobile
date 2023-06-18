@@ -1,5 +1,7 @@
 package com.lduboscq.appkickstarter
 
+import com.lduboscq.appkickstarter.main.data.Frog
+import com.lduboscq.appkickstarter.main.data.FrogData
 import com.lduboscq.appkickstarter.main.data.FrogRepositoryInterface
 import io.realm.kotlin.Realm
 import io.realm.kotlin.log.LogLevel
@@ -58,9 +60,15 @@ class FrogRepositoryRemote() : FrogRepositoryInterface {
         }
 
         realm.writeBlocking {
-            val frog: Frog = this.copyToRealm(Frog())
-            frog.name = name
-            frog.age = age
+            val frogDb = query(Frog::class, "name == $0", name).first().find()
+            if (frogDb == null) {
+                val frog: Frog = this.copyToRealm(Frog())
+                frog.name = name
+                frog.age = age
+            }
+            if (frogDb != null) {
+                frogDb.age= frogDb.age + 1
+            }
         }
 
         return getAllFrog()

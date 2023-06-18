@@ -2,6 +2,8 @@ package com.lduboscq.appkickstarter
 
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
+import com.lduboscq.appkickstarter.main.data.Frog
+import com.lduboscq.appkickstarter.main.data.FrogData
 import com.lduboscq.appkickstarter.main.data.FrogRepositoryInterface
 import kotlinx.coroutines.launch
 

@@ -28,8 +28,6 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.lduboscq.appkickstarter.Frog
-import com.lduboscq.appkickstarter.FrogData
 import com.lduboscq.appkickstarter.FrogRepositoryRemote
 import com.lduboscq.appkickstarter.FrogScreenModel
 import com.lduboscq.appkickstarter.main.Image
@@ -135,6 +133,13 @@ class FrogScreen : Screen {
                             } else {
                                 update(FrogData(id = frog._id, age = ageToUpdate))
                             }
+                        },
+                    )
+
+                    Button(
+                        content = { Text("remove") },
+                        onClick = {
+                            delete(frog._id)
                         },
                     )
                 }

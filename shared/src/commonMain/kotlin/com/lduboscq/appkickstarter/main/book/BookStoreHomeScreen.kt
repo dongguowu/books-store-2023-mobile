@@ -24,6 +24,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,9 +38,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.lduboscq.appkickstarter.main.data.Frog
+import com.lduboscq.appkickstarter.FrogRepositoryRemote
+import com.lduboscq.appkickstarter.FrogScreenModel
 import com.lduboscq.appkickstarter.main.Image
 import com.lduboscq.appkickstarter.model.BookData
 import com.lduboscq.appkickstarter.model.User
@@ -50,13 +56,27 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
+        val screenModel = rememberScreenModel() { FrogScreenModel(FrogRepositoryRemote()) }
+        val state by screenModel.state.collectAsState()
 
+        LaunchedEffect(true) {
+            screenModel.getFrog("")
+        }
+        var message by remember { mutableStateOf("") }
+        when (val result = state) {
+            is FrogScreenModel.State.Init -> message = "Just initialized"
+            is FrogScreenModel.State.Loading -> message = "Loading"
+            is FrogScreenModel.State.Result -> message = "Success"
+            else -> {}
+        }
 
         val bookList = getBookList()
 
-
-        val cartLineList = remember { mutableListOf<ShoppingCartLineData>() }
-        var quantityInShoppingCart by remember { mutableStateOf(cartLineList.size) }
+        val cartLineList = remember { mutableListOf<Frog>() }
+        var quantity by remember { mutableStateOf(cartLineList.size) }
+        if (state is FrogScreenModel.State.Result) {
+            quantity = (state as FrogScreenModel.State.Result).frogList.sumOf { frog -> frog.age }
+        }
 
         var welcomeString = "welcome!"
         if (user != null) {
@@ -64,25 +84,8 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
         }
         var infoText by remember { mutableStateOf(welcomeString) }
 
-        fun addToCart(book: BookData, quantity: Int = 1) {
-
-            var cartLinInList = cartLineList.firstOrNull { it.bookId == book.id }
-
-            if (cartLinInList == null) {
-                cartLineList.add(
-                    ShoppingCartLineData(
-                        id = null,
-                        bookId = book.id.toString(),
-                        quantity = quantity,
-                        shoppingCartLine = null
-                    )
-                )
-            } else {
-                cartLinInList.quantity += quantity
-            }
-
-            quantityInShoppingCart = cartLineList.sumOf { it.quantity }
-
+        fun addToCart(book: BookData) {
+            screenModel.addFrog(book.id)
         }
 
         val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -93,7 +96,7 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
 
             bottomBar = {
                 MyBottomBar(
-                    quantity = quantityInShoppingCart,
+                    quantity = quantity,
                     currentScreen = Route.Home(user)
                 )
             },

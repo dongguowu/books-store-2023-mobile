@@ -1,8 +1,5 @@
 package com.lduboscq.appkickstarter.main.data
 
-import com.lduboscq.appkickstarter.Frog
-import com.lduboscq.appkickstarter.FrogData
-
 interface FrogRepositoryInterface {
 
     suspend fun getAllFrog(): List<Frog>
