@@ -43,13 +43,16 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.lduboscq.appkickstarter.FrogRepositoryRemote
-import com.lduboscq.appkickstarter.FrogScreenModel
-import com.lduboscq.appkickstarter.main.Image
-import com.lduboscq.appkickstarter.main.data.AddOrSubstrateQuantity
-import com.lduboscq.appkickstarter.main.data.CartLine
-import com.lduboscq.appkickstarter.main.data.CartLineData
-import com.lduboscq.appkickstarter.model.BookData
+import com.lduboscq.appkickstarter.ShoppingCartRepositoryRemote
+import com.lduboscq.appkickstarter.ShoppingCartScreenModel
+import com.lduboscq.appkickstarter.main.Route
+import com.lduboscq.appkickstarter.main.screenRouter
+import com.lduboscq.appkickstarter.main.ui.Image
+import com.lduboscq.appkickstarter.main.shoppingcart.AddOrSubstrateQuantity
+import com.lduboscq.appkickstarter.main.shoppingcart.CartLine
+import com.lduboscq.appkickstarter.main.shoppingcart.CartLineData
+import com.lduboscq.appkickstarter.main.ui.MyBottomBar
+import com.lduboscq.appkickstarter.main.ui.MyTopBar
 import com.lduboscq.appkickstarter.model.User
 
 internal class BookStoreHomeScreen(var user: User? = null) : Screen {
@@ -59,7 +62,7 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
     override fun Content() {
 
         // Insert shopping cart repository
-        val screenModel = rememberScreenModel() { FrogScreenModel(FrogRepositoryRemote()) }
+        val screenModel = rememberScreenModel() { ShoppingCartScreenModel(ShoppingCartRepositoryRemote()) }
         val state by screenModel.state.collectAsState()
 
 
@@ -74,21 +77,21 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
         // Message
         var messageOnTopBar by remember { mutableStateOf("") }
         when (val result = state) {
-            is FrogScreenModel.State.Init -> messageOnTopBar = "Just initialized"
-            is FrogScreenModel.State.Loading -> messageOnTopBar = "Loading"
-            is FrogScreenModel.State.Result -> messageOnTopBar = "Success"
+            is ShoppingCartScreenModel.State.Init -> messageOnTopBar = "Just initialized"
+            is ShoppingCartScreenModel.State.Loading -> messageOnTopBar = "Loading"
+            is ShoppingCartScreenModel.State.Result -> messageOnTopBar = "Success"
             else -> {}
         }
 
         // Load shopping cart data
         LaunchedEffect(true) {
-            screenModel.getFrog("")
+            screenModel.getCartLineByBookId("")
         }
 
         var quantity by remember { mutableStateOf(0) }
-        if (state is FrogScreenModel.State.Result) {
+        if (state is ShoppingCartScreenModel.State.Result) {
             quantity =
-                (state as FrogScreenModel.State.Result).cartLineList.sumOf { frog -> frog.quantity }
+                (state as ShoppingCartScreenModel.State.Result).cartLineList.sumOf { item -> item.quantity }
         }
 
         if (user != null) {
@@ -131,15 +134,15 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
                         for (book in bookListState) {
                             item {
                                 var cartLineList: List<CartLine>? = null
-                                if (state is FrogScreenModel.State.Result) {
+                                if (state is ShoppingCartScreenModel.State.Result) {
                                     cartLineList =
-                                        (state as FrogScreenModel.State.Result).cartLineList
+                                        (state as ShoppingCartScreenModel.State.Result).cartLineList
                                 }
                                 BookCard(
                                     book = book,
                                     cartLine = cartLineList?.firstOrNull { it.bookId == book.id },
-                                    addToCartOrUpdate = { screenModel.addOrUpdateFrog(it) },
-                                    removeFromCat = { screenModel.deleteFrog(it) })
+                                    addToCartOrUpdate = { screenModel.addOrUpdateCartLine(it) },
+                                    removeFromCat = { screenModel.deleteCartLineByBookId(it) })
                             }
                         }
                     }

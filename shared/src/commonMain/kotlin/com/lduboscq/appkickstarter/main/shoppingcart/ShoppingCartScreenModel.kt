@@ -2,13 +2,13 @@ package com.lduboscq.appkickstarter
 
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
-import com.lduboscq.appkickstarter.main.data.CartLine
-import com.lduboscq.appkickstarter.main.data.CartLineData
-import com.lduboscq.appkickstarter.main.data.FrogRepositoryInterface
+import com.lduboscq.appkickstarter.main.shoppingcart.CartLine
+import com.lduboscq.appkickstarter.main.shoppingcart.CartLineData
+import com.lduboscq.appkickstarter.main.shoppingcart.ShoppingCartRepositoryInterface
 import kotlinx.coroutines.launch
 
-class FrogScreenModel(private val repository: FrogRepositoryInterface) :
-    StateScreenModel<FrogScreenModel.State>(State.Init) {
+class ShoppingCartScreenModel(private val repository: ShoppingCartRepositoryInterface) :
+    StateScreenModel<ShoppingCartScreenModel.State>(State.Init) {
 
     sealed class State {
         object Init : State()
@@ -17,15 +17,15 @@ class FrogScreenModel(private val repository: FrogRepositoryInterface) :
         //TODO: singleResult and multipleResult
     }
 
-    fun getFrog(name: String) {
+    fun getCartLineByBookId(bookId: String) {
         coroutineScope.launch {
             mutableState.value = State.Loading
-            mutableState.value = State.Result(cartLineList = repository.getByBookId(name))
+            mutableState.value = State.Result(cartLineList = repository.getByBookId(bookId))
         }
     }
 
 
-    fun addOrUpdateFrog(cartLine: CartLineData) {
+    fun addOrUpdateCartLine(cartLine: CartLineData) {
         coroutineScope.launch {
             mutableState.value = State.Loading
             mutableState.value = State.Result(
@@ -34,10 +34,10 @@ class FrogScreenModel(private val repository: FrogRepositoryInterface) :
         }
     }
 
-    fun deleteFrog(id: String) {
+    fun deleteCartLineByBookId(bookId: String) {
         coroutineScope.launch {
             mutableState.value = State.Loading
-            mutableState.value = State.Result(cartLineList = repository.delete(id))
+            mutableState.value = State.Result(cartLineList = repository.delete(bookId))
         }
     }
 

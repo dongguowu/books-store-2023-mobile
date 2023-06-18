@@ -1,9 +1,10 @@
-package com.lduboscq.appkickstarter.main.book
+package com.lduboscq.appkickstarter.main
 
 import cafe.adriel.voyager.core.screen.Screen
-import com.lduboscq.appkickstarter.main.data.FrogScreen
-import com.lduboscq.appkickstarter.main.screen.AboutScreen
-import com.lduboscq.appkickstarter.main.screen.DetailScreen
+import com.lduboscq.appkickstarter.main.book.BookStoreHomeScreen
+import com.lduboscq.appkickstarter.main.shoppingcart.ShoppingCartScreen
+import com.lduboscq.appkickstarter.main.ui.infoscreen.AboutScreen
+import com.lduboscq.appkickstarter.main.ui.infoscreen.DetailScreen
 
 fun screenRouter(screen: Route): Screen {
     return when (screen) {
@@ -24,7 +25,7 @@ fun screenRouter(screen: Route): Screen {
         }
 
         is Route.ShoppingCart -> {
-            FrogScreen()
+            ShoppingCartScreen()
         }
     }
 }

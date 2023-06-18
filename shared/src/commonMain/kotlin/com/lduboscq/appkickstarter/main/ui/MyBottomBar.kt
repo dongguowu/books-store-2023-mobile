@@ -1,4 +1,4 @@
-package com.lduboscq.appkickstarter.main.book
+package com.lduboscq.appkickstarter.main.ui
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.lduboscq.appkickstarter.main.Route
+import com.lduboscq.appkickstarter.main.screenRouter
 import com.lduboscq.appkickstarter.model.User
 
 @OptIn(ExperimentalMaterial3Api::class)

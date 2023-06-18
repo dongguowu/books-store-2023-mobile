@@ -1,6 +1,6 @@
-package com.lduboscq.appkickstarter.main.data
+package com.lduboscq.appkickstarter.main.shoppingcart
 
-interface FrogRepositoryInterface {
+interface ShoppingCartRepositoryInterface {
 
     suspend fun getAll(): List<CartLine>
     suspend fun getByBookId(bookId: String): List<CartLine>

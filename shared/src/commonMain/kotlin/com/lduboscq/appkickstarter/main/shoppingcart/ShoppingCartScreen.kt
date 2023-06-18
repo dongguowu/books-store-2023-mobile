@@ -1,4 +1,4 @@
-package com.lduboscq.appkickstarter.main.data
+package com.lduboscq.appkickstarter.main.shoppingcart
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -32,16 +32,16 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.lduboscq.appkickstarter.FrogRepositoryRemote
-import com.lduboscq.appkickstarter.FrogScreenModel
-import com.lduboscq.appkickstarter.main.Image
-import com.lduboscq.appkickstarter.main.book.MyBottomBar
-import com.lduboscq.appkickstarter.main.book.MyTopBar
-import com.lduboscq.appkickstarter.main.book.Route
+import com.lduboscq.appkickstarter.ShoppingCartRepositoryRemote
+import com.lduboscq.appkickstarter.ShoppingCartScreenModel
+import com.lduboscq.appkickstarter.main.ui.Image
+import com.lduboscq.appkickstarter.main.ui.MyBottomBar
+import com.lduboscq.appkickstarter.main.ui.MyTopBar
+import com.lduboscq.appkickstarter.main.Route
 import com.lduboscq.appkickstarter.main.book.getBookList
-import com.lduboscq.appkickstarter.main.book.screenRouter
+import com.lduboscq.appkickstarter.main.screenRouter
 
-class FrogScreen : Screen {
+class ShoppingCartScreen : Screen {
 
     private val bookList = getBookList()
 
@@ -49,7 +49,7 @@ class FrogScreen : Screen {
     @Composable
     override fun Content() {
         // Insert shopping cart repository
-        val screenModel = rememberScreenModel() { FrogScreenModel(FrogRepositoryRemote()) }
+        val screenModel = rememberScreenModel() { ShoppingCartScreenModel(ShoppingCartRepositoryRemote()) }
         val state by screenModel.state.collectAsState()
 
 
@@ -60,20 +60,20 @@ class FrogScreen : Screen {
         // Message
         var messageOnTopBar by remember { mutableStateOf("") }
         when (val result = state) {
-            is FrogScreenModel.State.Init -> messageOnTopBar = "Just initialized"
-            is FrogScreenModel.State.Loading -> messageOnTopBar = "Loading"
-            is FrogScreenModel.State.Result -> messageOnTopBar = "Success"
+            is ShoppingCartScreenModel.State.Init -> messageOnTopBar = "Just initialized"
+            is ShoppingCartScreenModel.State.Loading -> messageOnTopBar = "Loading"
+            is ShoppingCartScreenModel.State.Result -> messageOnTopBar = "Success"
             else -> {}
         }
 
         // Load shopping cart data
         LaunchedEffect(true) {
-            screenModel.getFrog("")
+            screenModel.getCartLineByBookId("")
         }
         var quantity by remember { mutableStateOf(0) }
-        if (state is FrogScreenModel.State.Result) {
+        if (state is ShoppingCartScreenModel.State.Result) {
             quantity =
-                (state as FrogScreenModel.State.Result).cartLineList.sumOf { frog -> frog.quantity }
+                (state as ShoppingCartScreenModel.State.Result).cartLineList.sumOf { item -> item.quantity }
         }
 
         val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -93,14 +93,14 @@ class FrogScreen : Screen {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(paddingValues),
                 ) {
-                    if (state is FrogScreenModel.State.Result) {
+                    if (state is ShoppingCartScreenModel.State.Result) {
                         LazyColumn {
-                            for (frog in (state as FrogScreenModel.State.Result).cartLineList) {
+                            for (item in (state as ShoppingCartScreenModel.State.Result).cartLineList) {
                                 item {
                                     CartLineCard(
-                                        cartLine = frog,
-                                        update = { screenModel.addOrUpdateFrog(it) },
-                                        delete = { screenModel.deleteFrog(it) }
+                                        cartLine = item,
+                                        update = { screenModel.addOrUpdateCartLine(it) },
+                                        delete = { screenModel.deleteCartLineByBookId(it) }
 
                                     )
                                 }
@@ -117,7 +117,7 @@ class FrogScreen : Screen {
     @Composable
     fun CartLineCard(
         cartLine: CartLine,
-        update: (frog: CartLineData) -> Unit,
+        update: (cartLineData: CartLineData) -> Unit,
         delete: (id: String) -> Unit
     ) {
         val navigator = LocalNavigator.currentOrThrow

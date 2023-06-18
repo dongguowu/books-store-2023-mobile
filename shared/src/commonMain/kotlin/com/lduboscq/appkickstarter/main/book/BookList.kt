@@ -1,7 +1,5 @@
 package com.lduboscq.appkickstarter.main.book
 
-import com.lduboscq.appkickstarter.model.BookData
-
 
 fun getBookList(): List<BookData> {
     return listOf(

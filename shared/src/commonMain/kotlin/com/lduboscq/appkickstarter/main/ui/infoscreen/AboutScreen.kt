@@ -1,4 +1,4 @@
-package com.lduboscq.appkickstarter.main.screen
+package com.lduboscq.appkickstarter.main.ui.infoscreen
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable

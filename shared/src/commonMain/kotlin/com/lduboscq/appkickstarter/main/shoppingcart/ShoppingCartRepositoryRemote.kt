@@ -1,8 +1,8 @@
 package com.lduboscq.appkickstarter
 
-import com.lduboscq.appkickstarter.main.data.CartLine
-import com.lduboscq.appkickstarter.main.data.CartLineData
-import com.lduboscq.appkickstarter.main.data.FrogRepositoryInterface
+import com.lduboscq.appkickstarter.main.shoppingcart.CartLine
+import com.lduboscq.appkickstarter.main.shoppingcart.CartLineData
+import com.lduboscq.appkickstarter.main.shoppingcart.ShoppingCartRepositoryInterface
 import io.realm.kotlin.Realm
 import io.realm.kotlin.log.LogLevel
 import io.realm.kotlin.mongodb.App
@@ -12,7 +12,7 @@ import io.realm.kotlin.mongodb.exceptions.SyncException
 import io.realm.kotlin.mongodb.sync.SyncConfiguration
 import io.realm.kotlin.mongodb.sync.SyncSession
 
-class FrogRepositoryRemote() : FrogRepositoryInterface {
+class ShoppingCartRepositoryRemote() : ShoppingCartRepositoryInterface {
 
     lateinit var realm: Realm
 
@@ -79,7 +79,6 @@ class FrogRepositoryRemote() : FrogRepositoryInterface {
         if (!this::realm.isInitialized) {
             setupRealmSync()
         }
-        // return all frogs on database
         if (bookId.isEmpty()) {
             return getAll()
         }
@@ -95,7 +94,7 @@ class FrogRepositoryRemote() : FrogRepositoryInterface {
         realm.writeBlocking {
             val cartLineDb = query(CartLine::class, "_id == $0", id).first().find()
             if (cartLineDb == null) {
-                println("****************************************\n" + "not found frog(id= ${id}}")
+                println("****************************************\n" + "not found")
             }
             cartLineDb?.let { delete(it) }
         }
