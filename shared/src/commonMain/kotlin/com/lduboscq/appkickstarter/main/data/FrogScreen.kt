@@ -3,12 +3,9 @@ package com.lduboscq.appkickstarter.main.data
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material3.Card
@@ -61,14 +58,15 @@ class FrogScreen : Screen {
 
         var quantity by remember { mutableStateOf(0) }
         if (state is FrogScreenModel.State.Result) {
-            quantity = (state as FrogScreenModel.State.Result).cartLineList.sumOf { frog -> frog.quantity }
+            quantity =
+                (state as FrogScreenModel.State.Result).cartLineList.sumOf { frog -> frog.quantity }
         }
 
         val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 
-            topBar = { MyTopBar(message, false, scrollBehavior) },
+            topBar = { MyTopBar(message, scrollBehavior) },
 
             bottomBar = {
                 MyBottomBar(
@@ -115,33 +113,10 @@ class FrogScreen : Screen {
                                 navigator.push(screenRouter(Route.Detail(book)))
                             })
                     )
-                    Button(
-                        content = { Text("+") },
-                        onClick = {
-                            update(CartLineData(id = cartLine._id, quantity = cartLine.quantity + 1))
-                        },
-                    )
-                    Spacer(modifier = Modifier.height(9.dp))
-                    Text("${cartLine?.quantity?.toString()}")
-                    Spacer(modifier = Modifier.height(9.dp))
-                    Button(
-                        content = { Text("-") },
-                        onClick = {
-                            var ageToUpdate = cartLine.quantity - 1
-                            if (ageToUpdate <= 0) {
-                                delete(cartLine._id)
-                            } else {
-                                update(CartLineData(id = cartLine._id, quantity = ageToUpdate))
-                            }
-                        },
-                    )
-
-                    Button(
-                        content = { Text("remove") },
-                        onClick = {
-                            delete(cartLine._id)
-                        },
-                    )
+                    AddOrSubstrateQuantity(
+                        cartLine = cartLine,
+                        update = { update(it) },
+                        delete = { delete(it) })
                 }
             }
 

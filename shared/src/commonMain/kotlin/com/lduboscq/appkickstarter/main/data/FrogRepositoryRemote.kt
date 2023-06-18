@@ -52,22 +52,23 @@ class FrogRepositoryRemote() : FrogRepositoryInterface {
     }
 
     override suspend fun addOrUpdate(
-        bookId: String,
-        quantity: Int,
+        cartLineData: CartLineData
     ): List<CartLine> {
         if (!this::realm.isInitialized) {
             setupRealmSync()
         }
 
         realm.writeBlocking {
-            val cartLineDb = query(CartLine::class, "bookId == $0", bookId).first().find()
+            val cartLineDb =
+                query(CartLine::class, "bookId == $0", cartLineData.bookId).first().find()
             if (cartLineDb == null) {
+                // Add new
                 val cartLine: CartLine = this.copyToRealm(CartLine())
-                cartLine.bookId = bookId
-                cartLine.quantity = quantity
-            }
-            if (cartLineDb != null) {
-                cartLineDb.quantity= cartLineDb.quantity + 1
+                cartLine.bookId = cartLineData.bookId
+                cartLine.quantity = cartLineData.quantity
+            } else {
+                // Update
+                cartLineDb.quantity = cartLineData.quantity
             }
         }
 

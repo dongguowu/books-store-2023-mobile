@@ -24,14 +24,12 @@ class FrogScreenModel(private val repository: FrogRepositoryInterface) :
         }
     }
 
-    fun addFrog(name: String) {
+
+    fun addOrUpdateFrog(cartLine: CartLineData) {
         coroutineScope.launch {
             mutableState.value = State.Loading
             mutableState.value = State.Result(
-                cartLineList = repository.addOrUpdate(
-                    bookId = name,
-                    quantity = 1,
-                )
+                cartLineList = repository.addOrUpdate(cartLine)
             )
         }
     }
