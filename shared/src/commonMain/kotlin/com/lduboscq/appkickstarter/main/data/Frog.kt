@@ -1,6 +1,5 @@
 package com.lduboscq.appkickstarter.main.data
 
-import com.lduboscq.appkickstarter.main.book.ShoppingCartLineData
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.RealmUUID
 import io.realm.kotlin.types.annotations.Index
@@ -14,12 +13,11 @@ class Frog : RealmObject {
     var name: String = ""
     var age: Int = 1
 
-    fun toData(): ShoppingCartLineData {
-        return ShoppingCartLineData(
+    fun toData(): FrogData {
+        return FrogData(
             id = null,
-            bookId = this.name,
-            quantity = this.age,
-            shoppingCartLine = null
+            name = this.name,
+            age = this.age,
         )
     }
 }
