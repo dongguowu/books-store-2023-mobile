@@ -2,9 +2,9 @@ package com.lduboscq.appkickstarter.main.data
 
 interface FrogRepositoryInterface {
 
-    suspend fun getAllFrog(): List<Frog>
-    suspend fun getFrog(fragName: String): List<Frog>
-    suspend fun addFrog(name: String, age: Int): List<Frog>
-    suspend fun updateFrog(frog: FrogData): List<Frog>
-    suspend fun deleteFrog(id: String): List<Frog>
+    suspend fun getAll(): List<CartLine>
+    suspend fun getByBookId(bookId: String): List<CartLine>
+    suspend fun addOrUpdate(bookId: String, quantity: Int): List<CartLine>
+    suspend fun update(cartLineData: CartLineData): List<CartLine>
+    suspend fun delete(id: String): List<CartLine>
 }

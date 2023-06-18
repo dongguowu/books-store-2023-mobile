@@ -61,7 +61,7 @@ class FrogScreen : Screen {
 
         var quantity by remember { mutableStateOf(0) }
         if (state is FrogScreenModel.State.Result) {
-            quantity = (state as FrogScreenModel.State.Result).frogList.sumOf { frog -> frog.age }
+            quantity = (state as FrogScreenModel.State.Result).cartLineList.sumOf { frog -> frog.quantity }
         }
 
         val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -80,10 +80,10 @@ class FrogScreen : Screen {
             content = {
                 if (state is FrogScreenModel.State.Result) {
                     LazyColumn {
-                        for (frog in (state as FrogScreenModel.State.Result).frogList) {
+                        for (frog in (state as FrogScreenModel.State.Result).cartLineList) {
                             item {
                                 CartLineCard(
-                                    frog = frog,
+                                    cartLine = frog,
                                     update = { frog -> screenModel.updateFrog(frog) },
                                     delete = { id -> screenModel.deleteFrog(id) }
 
@@ -98,15 +98,15 @@ class FrogScreen : Screen {
 
     @Composable
     fun CartLineCard(
-        frog: Frog,
-        update: (frog: FrogData) -> Unit,
+        cartLine: CartLine,
+        update: (frog: CartLineData) -> Unit,
         delete: (id: String) -> Unit
     ) {
         val navigator = LocalNavigator.currentOrThrow
-        val book = bookList.firstOrNull { frog.name == it.id } ?: return
+        val book = bookList.firstOrNull { cartLine.bookId == it.id } ?: return
         Card() {
             Column {
-                Text("name: ${frog.name}")
+                Text(" ${book.title}")
                 Row {
                     Image(
                         url = book.imagePath,
@@ -118,20 +118,20 @@ class FrogScreen : Screen {
                     Button(
                         content = { Text("+") },
                         onClick = {
-                            update(FrogData(id = frog._id, age = frog.age + 1))
+                            update(CartLineData(id = cartLine._id, quantity = cartLine.quantity + 1))
                         },
                     )
                     Spacer(modifier = Modifier.height(9.dp))
-                    Text("age: ${frog?.age?.toString()}")
+                    Text("${cartLine?.quantity?.toString()}")
                     Spacer(modifier = Modifier.height(9.dp))
                     Button(
                         content = { Text("-") },
                         onClick = {
-                            var ageToUpdate = frog.age - 1
+                            var ageToUpdate = cartLine.quantity - 1
                             if (ageToUpdate <= 0) {
-                                delete(frog._id)
+                                delete(cartLine._id)
                             } else {
-                                update(FrogData(id = frog._id, age = ageToUpdate))
+                                update(CartLineData(id = cartLine._id, quantity = ageToUpdate))
                             }
                         },
                     )
@@ -139,7 +139,7 @@ class FrogScreen : Screen {
                     Button(
                         content = { Text("remove") },
                         onClick = {
-                            delete(frog._id)
+                            delete(cartLine._id)
                         },
                     )
                 }

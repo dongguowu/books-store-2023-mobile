@@ -1,7 +1,7 @@
 package com.lduboscq.appkickstarter
 
-import com.lduboscq.appkickstarter.main.data.Frog
-import com.lduboscq.appkickstarter.main.data.FrogData
+import com.lduboscq.appkickstarter.main.data.CartLine
+import com.lduboscq.appkickstarter.main.data.CartLineData
 import com.lduboscq.appkickstarter.main.data.FrogRepositoryInterface
 import io.realm.kotlin.Realm
 import io.realm.kotlin.log.LogLevel
@@ -18,25 +18,25 @@ class FrogRepositoryRemote() : FrogRepositoryInterface {
 
     private val appServiceInstance by lazy {
         val configuration =
-            AppConfiguration.Builder("application-0-luysu").log(LogLevel.ALL)
+            AppConfiguration.Builder("application-shopping-cart-lines-xyaxh").log(LogLevel.ALL)
                 .build()
         App.create(configuration)
     }
 
     private suspend fun setupRealmSync() {
         val user =
-            appServiceInstance.login(Credentials.apiKey("D57YZuuBYkKYTxopA4isfgJbGlGVLmiKhluhqHOev8GyAMrizUr9XINvHKGxEvVH"))
+            appServiceInstance.login(Credentials.apiKey("6xSR1H5UG8jTPgebJd6oedds7xzdiaqKLg97QJomuNsJ6g9unNat4bwf2MjEhM7g"))
 
         println("Got Here")
-        val config = SyncConfiguration.Builder(user, setOf(Frog::class))
-            .initialSubscriptions { realm ->
+        val config = SyncConfiguration.Builder(user, setOf(CartLine::class))
+            .initialSubscriptions(rerunOnOpen = true) { realm ->
                 add(
-                    realm.query<Frog>(
-                        Frog::class,
+                    realm.query<CartLine>(
+                        CartLine::class,
                         "_id == $0",
                         user.id
                     ),
-                    name = "FrogSub",
+                    name = "shoppingcart",
                     updateExisting = true
                 )
             }
@@ -51,77 +51,77 @@ class FrogRepositoryRemote() : FrogRepositoryInterface {
         realm.close()
     }
 
-    override suspend fun addFrog(
-        name: String,
-        age: Int,
-    ): List<Frog> {
+    override suspend fun addOrUpdate(
+        bookId: String,
+        quantity: Int,
+    ): List<CartLine> {
         if (!this::realm.isInitialized) {
             setupRealmSync()
         }
 
         realm.writeBlocking {
-            val frogDb = query(Frog::class, "name == $0", name).first().find()
-            if (frogDb == null) {
-                val frog: Frog = this.copyToRealm(Frog())
-                frog.name = name
-                frog.age = age
+            val cartLineDb = query(CartLine::class, "bookId == $0", bookId).first().find()
+            if (cartLineDb == null) {
+                val cartLine: CartLine = this.copyToRealm(CartLine())
+                cartLine.bookId = bookId
+                cartLine.quantity = quantity
             }
-            if (frogDb != null) {
-                frogDb.age= frogDb.age + 1
+            if (cartLineDb != null) {
+                cartLineDb.quantity= cartLineDb.quantity + 1
             }
         }
 
-        return getAllFrog()
+        return getAll()
     }
 
-    override suspend fun updateFrog(frogToUpdate: FrogData): List<Frog> {
+    override suspend fun update(frogToUpdate: CartLineData): List<CartLine> {
         if (!this::realm.isInitialized) {
             setupRealmSync()
         }
 
         realm.writeBlocking {
-            val frogDb = query(Frog::class, "_id == $0", frogToUpdate.id).first().find()
-            if (frogDb == null) {
+            val cartLineDb = query(CartLine::class, "_id == $0", frogToUpdate.id).first().find()
+            if (cartLineDb == null) {
                 println("****************************************\n" + "not found frog(id= ${frogToUpdate.id}}")
             }
-            frogDb?.age = frogToUpdate.age
+            cartLineDb?.quantity = frogToUpdate.quantity
         }
 
-        return getAllFrog()
+        return getAll()
     }
 
-    override suspend fun getFrog(name: String): List<Frog> {
+    override suspend fun getByBookId(bookId: String): List<CartLine> {
         if (!this::realm.isInitialized) {
             setupRealmSync()
         }
         // return all frogs on database
-        if (name.isEmpty()) {
-            return getAllFrog()
+        if (bookId.isEmpty()) {
+            return getAll()
         }
         // Search equality on the primary key field name
-        return realm.query(Frog::class, "name == $0", name).find()
+        return realm.query(CartLine::class, "bookId == $0", bookId).find()
     }
 
-    override suspend fun deleteFrog(id: String): List<Frog> {
+    override suspend fun delete(id: String): List<CartLine> {
         if (!this::realm.isInitialized) {
             setupRealmSync()
         }
 
         realm.writeBlocking {
-            val frogDb = query(Frog::class, "_id == $0", id).first().find()
-            if (frogDb == null) {
+            val cartLineDb = query(CartLine::class, "_id == $0", id).first().find()
+            if (cartLineDb == null) {
                 println("****************************************\n" + "not found frog(id= ${id}}")
             }
-            frogDb?.let { delete(it) }
+            cartLineDb?.let { delete(it) }
         }
-        return getAllFrog()
+        return getAll()
     }
 
-    override suspend fun getAllFrog(): List<Frog> {
+    override suspend fun getAll(): List<CartLine> {
         if (!this::realm.isInitialized) {
             setupRealmSync()
         }
-        var list = realm.query(Frog::class).find()
+        var list = realm.query(CartLine::class).find()
 //        closeRealmSync()
         return list
     }

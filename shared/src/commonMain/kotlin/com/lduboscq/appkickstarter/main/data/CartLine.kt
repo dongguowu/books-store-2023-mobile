@@ -5,25 +5,25 @@ import io.realm.kotlin.types.RealmUUID
 import io.realm.kotlin.types.annotations.Index
 import io.realm.kotlin.types.annotations.PrimaryKey
 
-class Frog : RealmObject {
+class CartLine : RealmObject {
     @PrimaryKey
     var _id: String = RealmUUID.random().toString()
 
     @Index
-    var name: String = ""
-    var age: Int = 1
+    var bookId: String = ""
+    var quantity: Int = 1
 
-    fun toData(): FrogData {
-        return FrogData(
-            id = null,
-            name = this.name,
-            age = this.age,
+    fun toData(): CartLineData {
+        return CartLineData(
+            id = this._id,
+            bookId = this.bookId,
+            quantity = this.quantity,
         )
     }
 }
 
-data class FrogData(
+data class CartLineData(
     var id: String? = null,
-    var name: String = "",
-    var age: Int = 1
+    var bookId: String = "",
+    var quantity: Int = 1
 )

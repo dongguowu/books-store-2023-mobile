@@ -42,7 +42,7 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.lduboscq.appkickstarter.main.data.Frog
+import com.lduboscq.appkickstarter.main.data.CartLine
 import com.lduboscq.appkickstarter.FrogRepositoryRemote
 import com.lduboscq.appkickstarter.FrogScreenModel
 import com.lduboscq.appkickstarter.main.Image
@@ -72,10 +72,10 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
 
         val bookList = getBookList()
 
-        val cartLineList = remember { mutableListOf<Frog>() }
+        val cartLineList = remember { mutableListOf<CartLine>() }
         var quantity by remember { mutableStateOf(cartLineList.size) }
         if (state is FrogScreenModel.State.Result) {
-            quantity = (state as FrogScreenModel.State.Result).frogList.sumOf { frog -> frog.age }
+            quantity = (state as FrogScreenModel.State.Result).cartLineList.sumOf { frog -> frog.quantity }
         }
 
         var welcomeString = "welcome!"

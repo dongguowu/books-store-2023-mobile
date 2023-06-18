@@ -2,8 +2,8 @@ package com.lduboscq.appkickstarter
 
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
-import com.lduboscq.appkickstarter.main.data.Frog
-import com.lduboscq.appkickstarter.main.data.FrogData
+import com.lduboscq.appkickstarter.main.data.CartLine
+import com.lduboscq.appkickstarter.main.data.CartLineData
 import com.lduboscq.appkickstarter.main.data.FrogRepositoryInterface
 import kotlinx.coroutines.launch
 
@@ -13,14 +13,14 @@ class FrogScreenModel(private val repository: FrogRepositoryInterface) :
     sealed class State {
         object Init : State()
         object Loading : State()
-        data class Result(val frogList: List<Frog>) : State()
+        data class Result(val cartLineList: List<CartLine>) : State()
         //TODO: singleResult and multipleResult
     }
 
     fun getFrog(name: String) {
         coroutineScope.launch {
             mutableState.value = State.Loading
-            mutableState.value = State.Result(frogList = repository.getFrog(name))
+            mutableState.value = State.Result(cartLineList = repository.getByBookId(name))
         }
     }
 
@@ -28,9 +28,9 @@ class FrogScreenModel(private val repository: FrogRepositoryInterface) :
         coroutineScope.launch {
             mutableState.value = State.Loading
             mutableState.value = State.Result(
-                frogList = repository.addFrog(
-                    name = name,
-                    age = 1,
+                cartLineList = repository.addOrUpdate(
+                    bookId = name,
+                    quantity = 1,
                 )
             )
         }
@@ -39,15 +39,15 @@ class FrogScreenModel(private val repository: FrogRepositoryInterface) :
     fun deleteFrog(id: String) {
         coroutineScope.launch {
             mutableState.value = State.Loading
-            mutableState.value = State.Result(frogList = repository.deleteFrog(id))
+            mutableState.value = State.Result(cartLineList = repository.delete(id))
         }
     }
 
-    fun updateFrog(frog: FrogData) {
+    fun updateFrog(frog: CartLineData) {
         coroutineScope.launch {
             mutableState.value = State.Loading
             mutableState.value =
-                State.Result(frogList = repository.updateFrog(frog))
+                State.Result(cartLineList = repository.update(frog))
         }
     }
 }
