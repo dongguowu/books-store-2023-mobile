@@ -18,7 +18,7 @@ fun AddOrSubstrateQuantity(
     Button(
         content = { Text("+") },
         onClick = {
-            update(CartLineData(id = cartLine._id, quantity = cartLine.quantity + 1))
+            update(CartLineData(bookId = cartLine.bookId, quantity = cartLine.quantity + 1))
         },
     )
     Spacer(modifier = Modifier.height(18.dp))
@@ -31,7 +31,7 @@ fun AddOrSubstrateQuantity(
             if (quantityToUpdate <= 0) {
                 delete(cartLine._id)
             } else {
-                update(CartLineData(id = cartLine._id, quantity = quantityToUpdate))
+                update(CartLineData(bookId = cartLine.bookId, quantity = quantityToUpdate))
             }
         },
     )

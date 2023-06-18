@@ -41,11 +41,5 @@ class FrogScreenModel(private val repository: FrogRepositoryInterface) :
         }
     }
 
-    fun updateFrog(frog: CartLineData) {
-        coroutineScope.launch {
-            mutableState.value = State.Loading
-            mutableState.value =
-                State.Result(cartLineList = repository.update(frog))
-        }
-    }
+
 }

@@ -41,21 +41,28 @@ class FrogScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
+        // Insert shopping cart repository
         val screenModel = rememberScreenModel() { FrogScreenModel(FrogRepositoryRemote()) }
         val state by screenModel.state.collectAsState()
 
-        LaunchedEffect(true) {
-            screenModel.getFrog("")
-        }
 
-        var message by remember { mutableStateOf("") }
+        // Local static books data
+        val bookList = getBookList()
+
+
+        // Message
+        var messageOnTopBar by remember { mutableStateOf("") }
         when (val result = state) {
-            is FrogScreenModel.State.Init -> message = "Just initialized"
-            is FrogScreenModel.State.Loading -> message = "Loading"
-            is FrogScreenModel.State.Result -> message = "Success"
+            is FrogScreenModel.State.Init -> messageOnTopBar = "Just initialized"
+            is FrogScreenModel.State.Loading -> messageOnTopBar = "Loading"
+            is FrogScreenModel.State.Result -> messageOnTopBar = "Success"
             else -> {}
         }
 
+        // Load shopping cart data
+        LaunchedEffect(true) {
+            screenModel.getFrog("")
+        }
         var quantity by remember { mutableStateOf(0) }
         if (state is FrogScreenModel.State.Result) {
             quantity =
@@ -64,9 +71,8 @@ class FrogScreen : Screen {
 
         val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
         Scaffold(
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 
-            topBar = { MyTopBar(message, scrollBehavior) },
+            topBar = { MyTopBar(messageOnTopBar, scrollBehavior) },
 
             bottomBar = {
                 MyBottomBar(
@@ -82,15 +88,17 @@ class FrogScreen : Screen {
                             item {
                                 CartLineCard(
                                     cartLine = frog,
-                                    update = { frog -> screenModel.updateFrog(frog) },
-                                    delete = { id -> screenModel.deleteFrog(id) }
+                                    update = { screenModel.addOrUpdateFrog(it) },
+                                    delete = { screenModel.deleteFrog(it) }
 
                                 )
                             }
                         }
                     }
                 }
-            }
+            },
+
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         )
     }
 
@@ -101,25 +109,29 @@ class FrogScreen : Screen {
         delete: (id: String) -> Unit
     ) {
         val navigator = LocalNavigator.currentOrThrow
-        val book = bookList.firstOrNull { cartLine.bookId == it.id } ?: return
-        Card() {
-            Column {
-                Text(" ${book.title}")
-                Row {
-                    Image(
-                        url = book.imagePath,
-                        modifier = Modifier.size(width = 120.dp, height = 180.dp).padding(15.dp)
-                            .clickable(onClick = {
-                                navigator.push(screenRouter(Route.Detail(book)))
-                            })
-                    )
-                    AddOrSubstrateQuantity(
-                        cartLine = cartLine,
-                        update = { update(it) },
-                        delete = { delete(it) })
+        val book = bookList.firstOrNull { cartLine.bookId == it.id }
+        if (book == null) {
+            Text(cartLine.quantity.toString())
+            delete(cartLine._id)
+        } else {
+            Card() {
+                Column {
+                    Text(" ${book.title}")
+                    Row {
+                        Image(
+                            url = book.imagePath,
+                            modifier = Modifier.size(width = 120.dp, height = 180.dp).padding(15.dp)
+                                .clickable(onClick = {
+                                    navigator.push(screenRouter(Route.Detail(book)))
+                                })
+                        )
+                        AddOrSubstrateQuantity(
+                            cartLine = cartLine,
+                            update = { update(it) },
+                            delete = { delete(it) })
+                    }
                 }
             }
-
         }
     }
 }

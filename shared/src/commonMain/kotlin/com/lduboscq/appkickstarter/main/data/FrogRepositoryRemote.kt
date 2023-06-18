@@ -75,22 +75,6 @@ class FrogRepositoryRemote() : FrogRepositoryInterface {
         return getAll()
     }
 
-    override suspend fun update(frogToUpdate: CartLineData): List<CartLine> {
-        if (!this::realm.isInitialized) {
-            setupRealmSync()
-        }
-
-        realm.writeBlocking {
-            val cartLineDb = query(CartLine::class, "_id == $0", frogToUpdate.id).first().find()
-            if (cartLineDb == null) {
-                println("****************************************\n" + "not found frog(id= ${frogToUpdate.id}}")
-            }
-            cartLineDb?.quantity = frogToUpdate.quantity
-        }
-
-        return getAll()
-    }
-
     override suspend fun getByBookId(bookId: String): List<CartLine> {
         if (!this::realm.isInitialized) {
             setupRealmSync()
@@ -123,7 +107,6 @@ class FrogRepositoryRemote() : FrogRepositoryInterface {
             setupRealmSync()
         }
         var list = realm.query(CartLine::class).find()
-//        closeRealmSync()
         return list
     }
 }

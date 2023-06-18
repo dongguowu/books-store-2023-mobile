@@ -80,14 +80,10 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
         LaunchedEffect(true) {
             screenModel.getFrog("")
         }
-        var cartLineList = remember { mutableListOf<CartLine>() }
         var quantity by remember { mutableStateOf(0) }
         if (state is FrogScreenModel.State.Result) {
-            quantity = 0
-            for (cartLine in (state as FrogScreenModel.State.Result).cartLineList) {
-                cartLineList.add(cartLine)
-                quantity += cartLine.quantity
-            }
+            quantity =
+                (state as FrogScreenModel.State.Result).cartLineList.sumOf { frog -> frog.quantity }
         }
 
         if (user != null) {
@@ -108,12 +104,17 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
                     modifier = Modifier.padding(paddingValues),
                 ) {
                     SearchBook(updateInfo = { messageOnTopBar = it }, updateQueryString = {})
+
                     LazyColumn {
                         for (book in bookList) {
                             item {
+                                var cartLineList: List<CartLine>? = null
+                                if (state is FrogScreenModel.State.Result) {
+                                    cartLineList = (state as FrogScreenModel.State.Result).cartLineList
+                                }
                                 BookCard(
                                     book = book,
-                                    cartLine = cartLineList.firstOrNull { it.bookId == book.id },
+                                    cartLine = cartLineList?.firstOrNull { it.bookId == book.id },
                                     addToCartOrUpdate = { screenModel.addOrUpdateFrog(it) },
                                     removeFromCat = { screenModel.deleteFrog(it) })
                             }
