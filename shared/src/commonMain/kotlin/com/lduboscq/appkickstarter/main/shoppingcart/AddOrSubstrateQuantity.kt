@@ -5,9 +5,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Icon
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
@@ -21,7 +22,8 @@ import androidx.compose.ui.unit.sp
 fun AddOrSubstrateQuantity(
     cartLine: CartLine,
     update: (cartLine: CartLineData) -> Unit,
-    delete: (cartLineId: String) -> Unit
+    delete: (cartLineId: String) -> Unit,
+    showRemove: Boolean = false
 ) {
     Row {
         SmallFloatingActionButton(
@@ -59,9 +61,23 @@ fun AddOrSubstrateQuantity(
             }
         ) {
             Icon(
-                Icons.Outlined.Delete,
+                Icons.Outlined.Edit,
                 contentDescription = "Localized description",
             )
         }
+        if (showRemove) {
+            Spacer(modifier = Modifier.width(18.dp))
+            SmallFloatingActionButton(
+                onClick = {
+                    delete(cartLine._id)
+                }
+            ) {
+                Icon(
+                    Icons.Outlined.Delete,
+                    contentDescription = "Delete the item on cart",
+                )
+            }
+        }
+
     }
 }

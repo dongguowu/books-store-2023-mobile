@@ -5,6 +5,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.BottomAppBar
@@ -73,8 +74,8 @@ fun MyBottomBar(quantity: Int, currentScreen: Route) {
                 content = {
                     BadgedBox(
                         badge = {
-                            Badge {
-                                if (quantity >= 1) {
+                            if (quantity >= 1) {
+                                Badge {
                                     Text(
                                         quantity.toString(),
                                         modifier = Modifier.semantics {
@@ -86,7 +87,7 @@ fun MyBottomBar(quantity: Int, currentScreen: Route) {
                             }
                         }) {
                         Icon(
-                            Icons.Filled.ShoppingCart,
+                            Icons.Outlined.ShoppingCart,
                             contentDescription = "Display the quantity of books in shopping cart"
                         )
                     }

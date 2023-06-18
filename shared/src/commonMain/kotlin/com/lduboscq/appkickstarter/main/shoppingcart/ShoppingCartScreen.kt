@@ -151,12 +151,14 @@ class ShoppingCartScreen : Screen {
                                 })
                         )
 
-                        Spacer(modifier = Modifier.width(120.dp))
+                        Spacer(modifier = Modifier.width(60.dp))
 
                         AddOrSubstrateQuantity(
                             cartLine = cartLine,
                             update = { update(it) },
-                            delete = { delete(it) })
+                            delete = { delete(it) },
+                            showRemove = true
+                        )
                     }
                 }
             }
