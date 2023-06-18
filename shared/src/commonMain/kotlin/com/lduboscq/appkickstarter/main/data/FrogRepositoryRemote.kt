@@ -66,17 +66,17 @@ class FrogRepositoryRemote() : FrogRepositoryInterface {
         return getAllFrog()
     }
 
-    override suspend fun updateFrog(id: String, age: Int): List<Frog> {
+    override suspend fun updateFrog(frogToUpdate: FrogData): List<Frog> {
         if (!this::realm.isInitialized) {
             setupRealmSync()
         }
 
         realm.writeBlocking {
-            val frogDb = query(Frog::class, "_id == $0", id).first().find()
+            val frogDb = query(Frog::class, "_id == $0", frogToUpdate.id).first().find()
             if (frogDb == null) {
-                println("****************************************\n" + "not found frog(id= ${id}}")
+                println("****************************************\n" + "not found frog(id= ${frogToUpdate.id}}")
             }
-            frogDb?.age = age
+            frogDb?.age = frogToUpdate.age
         }
 
         return getAllFrog()
