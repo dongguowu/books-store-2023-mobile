@@ -60,29 +60,28 @@ class FrogScreen : Screen {
 
                     Card() {
                         Column {
-                            Text("name: ${frog.name}, \nid: ${frog._id}")
+                            Text("name: ${frog.name}")
                             Text("age: ${frog?.age?.toString()}")
-                            Text("Species: ${frog?.species}")
-                            Text("Owner: ${frog?.owner}")
                         }
                         Button(
+                            content = { Text("+") },
                             onClick = {
-                                screenModel.updateFrog(frog._id, frogName)
+                                screenModel.updateFrog(frog._id, frog.age + 1)
                             },
-                            content = { Text("update ") }
                         )
                         Spacer(modifier = Modifier.height(9.dp))
-
                         Button(
+                            content = { Text("-") },
                             onClick = {
-                                screenModel.deleteFrog(frog._id)
+                                var ageToUpdate = frog.age - 1
+                                if (ageToUpdate <= 0) {
+                                    screenModel.deleteFrog(frog._id)
+                                } else {
+                                    screenModel.updateFrog(frog._id, frog.age - 1)
+                                }
                             },
-                            content = { Text("delete ") }
                         )
-                        Spacer(modifier = Modifier.height(9.dp))
                     }
-
-
                 }
             }
         }

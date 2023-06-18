@@ -28,9 +28,7 @@ class FrogScreenModel(private val repository: FrogRepositoryInterface) :
             mutableState.value = State.Result(
                 frogList = repository.addFrog(
                     name = name,
-                    age = 45,
-                    species = "Green",
-                    owner = "Jim"
+                    age = 1,
                 )
             )
         }
@@ -43,11 +41,11 @@ class FrogScreenModel(private val repository: FrogRepositoryInterface) :
         }
     }
 
-    fun updateFrog(id: String, name: String) {
+    fun updateFrog(id: String, age: Int) {
         coroutineScope.launch {
             mutableState.value = State.Loading
             mutableState.value =
-                State.Result(frogList = repository.updateFrog(id = id, name = name))
+                State.Result(frogList = repository.updateFrog(id = id, age = age))
         }
     }
 }

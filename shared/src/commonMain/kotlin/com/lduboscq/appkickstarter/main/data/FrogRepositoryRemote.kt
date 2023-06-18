@@ -9,7 +9,6 @@ import io.realm.kotlin.mongodb.Credentials
 import io.realm.kotlin.mongodb.exceptions.SyncException
 import io.realm.kotlin.mongodb.sync.SyncConfiguration
 import io.realm.kotlin.mongodb.sync.SyncSession
-import io.realm.kotlin.types.MutableRealmInt
 
 class FrogRepositoryRemote() : FrogRepositoryInterface {
 
@@ -53,8 +52,6 @@ class FrogRepositoryRemote() : FrogRepositoryInterface {
     override suspend fun addFrog(
         name: String,
         age: Int,
-        species: String,
-        owner: String
     ): List<Frog> {
         if (!this::realm.isInitialized) {
             setupRealmSync()
@@ -64,14 +61,12 @@ class FrogRepositoryRemote() : FrogRepositoryInterface {
             val frog: Frog = this.copyToRealm(Frog())
             frog.name = name
             frog.age = age
-            frog.species = species
-            frog.owner = owner
         }
 
         return getAllFrog()
     }
 
-    override suspend fun updateFrog(id: String, name: String ): List<Frog> {
+    override suspend fun updateFrog(id: String, age: Int): List<Frog> {
         if (!this::realm.isInitialized) {
             setupRealmSync()
         }
@@ -81,7 +76,7 @@ class FrogRepositoryRemote() : FrogRepositoryInterface {
             if (frogDb == null) {
                 println("****************************************\n" + "not found frog(id= ${id}}")
             }
-            frogDb?.name = name
+            frogDb?.age = age
         }
 
         return getAllFrog()
