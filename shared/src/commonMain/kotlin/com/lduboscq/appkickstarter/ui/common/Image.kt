@@ -1,4 +1,4 @@
-package com.lduboscq.appkickstarter.ui
+package com.lduboscq.appkickstarter.ui.common
 
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
@@ -8,26 +8,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.layout.ContentScale
+import com.lduboscq.appkickstarter.ui.generateImageLoader
 import com.seiko.imageloader.LocalImageLoader
 import com.seiko.imageloader.rememberAsyncImagePainter
-
-//@Composable
-//internal fun Image(url: String, modifier: Modifier = Modifier) {
-//    CompositionLocalProvider(
-//        LocalImageLoader provides generateImageLoader(),
-//    ) {
-//        Image(
-//            painter = rememberAsyncImagePainter(url),
-//            contentDescription = null,
-//            modifier = modifier
-//        )
-//    }
-//}
 
 
 @Composable
 internal fun Image(
-    url: String, modifier: Modifier = Modifier,
+    url: String,
+    modifier: Modifier = Modifier,
     contentDescription: String? = null,
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Fit,

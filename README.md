@@ -1,45 +1,63 @@
-# Welcome to KMPStarterOS, a minimalist but yet useful open source version of [AppKickstarter](https://appkickstarter.com)
+# Assignment #2: Multi-Screen CRUD Kotlin Multiplatform / Compose Multiplatform App
 
-If you just need to support android and ios with no backend requirement 
-(just offline data) and no need for in app purchases or fancy features 
-like auth and onboarding then you are on the right place and this open source template is good for you.
+## [Dongguo Wu](https://github.com/dongguowu)
 
-Otherwise, if you need more capabilities please check out our premium template [AppKickstarter](https://appkickstarter.com) which is on the same stack but with a lot more of content.
+### Based on [AppKickstarter Template](https://github.com/JetBrains/compose-multiplatform-ios-android-template)
 
-![gif](kmp.gif)
+## Functionality
 
-## Platform supported for KMPStarterOS
+## Books Functionality Screen
 
-- Android
-- iOS 
+**Read** operation
 
-## Architecture 
+- display a list of book cards.
+- search books by title
 
-- Shared KMM library
-- Android app
-- iOS app
+**Create, Update, Delete** operations
 
-## Libraries already configured
+- add, update, remove item on shopping cart
 
-### IOS
+ <img src="readme_images/home.png" alt="Image Description" width="300" height="">
+  <img src="readme_images/search_books.png" alt="Image Description" width="300" height="">
 
-- SwiftUI for iOS UI
+## Shopping Cart Functionality Screen
 
-### Android
+**Read** operation
 
-- Jetpack Compose for Android UI
-- Android workmanager
-- Android Compose navigation
-- Accompanist (systemuicontroller, permissions)
+- display all items added to cart
 
-### Multiplatform
- 
-- Compose multiplatform for shared UI
-- Multiplatform localization (Moko resources)
-- Multiplatform logging (Napier)
-- Multiplatform dependency injection (Koin)
-- Multiplatform database (SqlDelight)
-- Multiplatform key-value storage (russhwolf:multiplatform-settings)
-- Multiplatform dates (Kotlinx-datetime)
-- Multiplatform http client (Ktor)
-- Multiplatform navigation (Voyager)
+**Update, Delete** operations
+
+- increase, decrease the quantity of item
+- remove item
+
+<img src="readme_images/shopping_cart.png" alt="Image Description" width="300" height="">
+
+## Book detail and app feature information screens
+
+<img src="readme_images/about.png" alt="Image Description" width="300" height=""><img src="readme_images/detail.png" alt="Image Description" width="300" height="">
+
+Implement CRUD
+
+#### 4 (CRUD) may work for a single item at a time
+
+- Create, add a book to shopping cart
+- Read, get an shopping cart item by book id
+- Update, update the quantity of item
+- Delete, delete the item from shopping cart
+
+#### 1 (R) must display a list (i.e., getAll)
+
+- Display all items on Shopping cart screen
+
+## Layout
+
+- use Scaffold as the whole layout.
+- share a common BottomAppBar to all four screens
+- use BottomAppBar as navigator
+
+## Project structure
+
+## <img src="readme_images/folder.png" alt="Image Description" width="600" height="">
+
+-- Model-View-ViewModel Pattern
