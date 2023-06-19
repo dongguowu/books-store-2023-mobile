@@ -1,4 +1,4 @@
-package com.lduboscq.appkickstarter.main.book
+package com.lduboscq.appkickstarter.main.view
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -44,15 +44,15 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.lduboscq.appkickstarter.ShoppingCartRepositoryRemote
-import com.lduboscq.appkickstarter.ShoppingCartScreenModel
-import com.lduboscq.appkickstarter.main.Route
-import com.lduboscq.appkickstarter.main.screenRouter
-import com.lduboscq.appkickstarter.main.shoppingcart.AddOrSubstrateQuantity
-import com.lduboscq.appkickstarter.main.shoppingcart.CartLine
-import com.lduboscq.appkickstarter.main.shoppingcart.CartLineData
-import com.lduboscq.appkickstarter.main.ui.Image
-import com.lduboscq.appkickstarter.main.ui.MyBottomBar
-import com.lduboscq.appkickstarter.main.ui.MyTopBar
+import com.lduboscq.appkickstarter.main.data.BookRepositoryLocalList
+import com.lduboscq.appkickstarter.main.layout.MyBottomBar
+import com.lduboscq.appkickstarter.main.layout.MyTopBar
+import com.lduboscq.appkickstarter.main.model.BookData
+import com.lduboscq.appkickstarter.main.model.CartLine
+import com.lduboscq.appkickstarter.main.model.CartLineData
+import com.lduboscq.appkickstarter.main.router.Route
+import com.lduboscq.appkickstarter.main.router.screenRouter
+import com.lduboscq.appkickstarter.main.screenModel.ShoppingCartScreenModel
 import com.lduboscq.appkickstarter.model.User
 
 internal class BookStoreHomeScreen(var user: User? = null) : Screen {
@@ -62,12 +62,17 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
     override fun Content() {
 
         // Insert shopping cart repository
-        val screenModel = rememberScreenModel() { ShoppingCartScreenModel(ShoppingCartRepositoryRemote()) }
+        val screenModel = rememberScreenModel() {
+            ShoppingCartScreenModel(
+                shoppingCartRepository = ShoppingCartRepositoryRemote(),
+                bookRepository = BookRepositoryLocalList()
+            )
+        }
         val state by screenModel.state.collectAsState()
 
 
         // Local static books data
-        var bookList = getBookList()
+        var bookList = screenModel.getAllBook()
         var bookListState = remember {
             bookList.toMutableStateList()
         }

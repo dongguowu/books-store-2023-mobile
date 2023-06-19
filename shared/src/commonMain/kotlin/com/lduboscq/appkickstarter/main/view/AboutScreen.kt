@@ -1,4 +1,4 @@
-package com.lduboscq.appkickstarter.main.ui.infoscreen
+package com.lduboscq.appkickstarter.main.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,8 +17,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
-import com.lduboscq.appkickstarter.main.Route
-import com.lduboscq.appkickstarter.main.ui.MyBottomBar
+import com.lduboscq.appkickstarter.main.router.Route
+import com.lduboscq.appkickstarter.main.layout.MyBottomBar
 
 internal class AboutScreen(var feature: String) : Screen {
 
@@ -48,7 +48,7 @@ internal class AboutScreen(var feature: String) : Screen {
                         Modifier.fillMaxSize()
                     ) {
 
-                        com.lduboscq.appkickstarter.main.ui.Image(
+                        Image(
                             url = "https://as1.ftcdn.net/v2/jpg/03/16/86/98/1000_F_316869849_oHD2qOXRJlZE2Md6SNv0MtvDcgZyHkfv.jpg",
                             modifier = Modifier.fillMaxSize()
                         )

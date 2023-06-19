@@ -1,4 +1,4 @@
-package com.lduboscq.appkickstarter.main.ui
+package com.lduboscq.appkickstarter.main.layout
 
 import androidx.compose.material.Text
 import androidx.compose.material3.CenterAlignedTopAppBar

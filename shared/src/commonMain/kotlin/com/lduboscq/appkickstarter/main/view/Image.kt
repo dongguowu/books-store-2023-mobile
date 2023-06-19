@@ -1,4 +1,4 @@
-package com.lduboscq.appkickstarter.main.ui
+package com.lduboscq.appkickstarter.main.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable

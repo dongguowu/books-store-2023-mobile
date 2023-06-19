@@ -1,8 +1,8 @@
 package com.lduboscq.appkickstarter
 
-import com.lduboscq.appkickstarter.main.shoppingcart.CartLine
-import com.lduboscq.appkickstarter.main.shoppingcart.CartLineData
-import com.lduboscq.appkickstarter.main.shoppingcart.ShoppingCartRepositoryInterface
+import com.lduboscq.appkickstarter.main.model.CartLine
+import com.lduboscq.appkickstarter.main.model.CartLineData
+import com.lduboscq.appkickstarter.main.data.ShoppingCartRepositoryInterface
 import io.realm.kotlin.Realm
 import io.realm.kotlin.log.LogLevel
 import io.realm.kotlin.mongodb.App

@@ -1,13 +1,15 @@
-package com.lduboscq.appkickstarter
+package com.lduboscq.appkickstarter.main.screenModel
 
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
-import com.lduboscq.appkickstarter.main.shoppingcart.CartLine
-import com.lduboscq.appkickstarter.main.shoppingcart.CartLineData
-import com.lduboscq.appkickstarter.main.shoppingcart.ShoppingCartRepositoryInterface
+import com.lduboscq.appkickstarter.main.data.BookRepositoryInterface
+import com.lduboscq.appkickstarter.main.data.ShoppingCartRepositoryInterface
+import com.lduboscq.appkickstarter.main.model.BookData
+import com.lduboscq.appkickstarter.main.model.CartLine
+import com.lduboscq.appkickstarter.main.model.CartLineData
 import kotlinx.coroutines.launch
 
-class ShoppingCartScreenModel(private val repository: ShoppingCartRepositoryInterface) :
+class ShoppingCartScreenModel(private val shoppingCartRepository: ShoppingCartRepositoryInterface, private val bookRepository: BookRepositoryInterface) :
     StateScreenModel<ShoppingCartScreenModel.State>(State.Init) {
 
     sealed class State {
@@ -17,10 +19,14 @@ class ShoppingCartScreenModel(private val repository: ShoppingCartRepositoryInte
         //TODO: singleResult and multipleResult
     }
 
+    fun getAllBook(): List<BookData> {
+        return bookRepository.getAll()
+    }
+
     fun getCartLineByBookId(bookId: String) {
         coroutineScope.launch {
             mutableState.value = State.Loading
-            mutableState.value = State.Result(cartLineList = repository.getByBookId(bookId))
+            mutableState.value = State.Result(cartLineList = shoppingCartRepository.getByBookId(bookId))
         }
     }
 
@@ -29,7 +35,7 @@ class ShoppingCartScreenModel(private val repository: ShoppingCartRepositoryInte
         coroutineScope.launch {
             mutableState.value = State.Loading
             mutableState.value = State.Result(
-                cartLineList = repository.addOrUpdate(cartLine)
+                cartLineList = shoppingCartRepository.addOrUpdate(cartLine)
             )
         }
     }
@@ -37,7 +43,7 @@ class ShoppingCartScreenModel(private val repository: ShoppingCartRepositoryInte
     fun deleteCartLineByBookId(bookId: String) {
         coroutineScope.launch {
             mutableState.value = State.Loading
-            mutableState.value = State.Result(cartLineList = repository.delete(bookId))
+            mutableState.value = State.Result(cartLineList = shoppingCartRepository.delete(bookId))
         }
     }
 

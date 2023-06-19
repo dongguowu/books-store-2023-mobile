@@ -1,4 +1,7 @@
-package com.lduboscq.appkickstarter.main.shoppingcart
+package com.lduboscq.appkickstarter.main.data
+
+import com.lduboscq.appkickstarter.main.model.CartLine
+import com.lduboscq.appkickstarter.main.model.CartLineData
 
 interface ShoppingCartRepositoryInterface {
 

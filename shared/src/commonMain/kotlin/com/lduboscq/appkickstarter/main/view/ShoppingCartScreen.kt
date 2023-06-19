@@ -1,4 +1,4 @@
-package com.lduboscq.appkickstarter.main.shoppingcart
+package com.lduboscq.appkickstarter.main.view
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -33,28 +33,34 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.lduboscq.appkickstarter.ShoppingCartRepositoryRemote
-import com.lduboscq.appkickstarter.ShoppingCartScreenModel
-import com.lduboscq.appkickstarter.main.ui.Image
-import com.lduboscq.appkickstarter.main.ui.MyBottomBar
-import com.lduboscq.appkickstarter.main.ui.MyTopBar
-import com.lduboscq.appkickstarter.main.Route
-import com.lduboscq.appkickstarter.main.book.getBookList
-import com.lduboscq.appkickstarter.main.screenRouter
+import com.lduboscq.appkickstarter.main.data.BookRepositoryLocalList
+import com.lduboscq.appkickstarter.main.layout.MyBottomBar
+import com.lduboscq.appkickstarter.main.layout.MyTopBar
+import com.lduboscq.appkickstarter.main.model.BookData
+import com.lduboscq.appkickstarter.main.model.CartLine
+import com.lduboscq.appkickstarter.main.model.CartLineData
+import com.lduboscq.appkickstarter.main.router.Route
+import com.lduboscq.appkickstarter.main.router.screenRouter
+import com.lduboscq.appkickstarter.main.screenModel.ShoppingCartScreenModel
 
 class ShoppingCartScreen : Screen {
 
-    private val bookList = getBookList()
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         // Insert shopping cart repository
-        val screenModel = rememberScreenModel() { ShoppingCartScreenModel(ShoppingCartRepositoryRemote()) }
+        val screenModel = rememberScreenModel() {
+            ShoppingCartScreenModel(
+                shoppingCartRepository = ShoppingCartRepositoryRemote(),
+                bookRepository = BookRepositoryLocalList()
+            )
+        }
         val state by screenModel.state.collectAsState()
 
 
         // Local static books data
-        val bookList = getBookList()
+        val bookList = screenModel.getAllBook()
 
 
         // Message
@@ -98,6 +104,7 @@ class ShoppingCartScreen : Screen {
                             for (item in (state as ShoppingCartScreenModel.State.Result).cartLineList) {
                                 item {
                                     CartLineCard(
+                                        bookList = bookList,
                                         cartLine = item,
                                         update = { screenModel.addOrUpdateCartLine(it) },
                                         delete = { screenModel.deleteCartLineByBookId(it) }
@@ -116,6 +123,7 @@ class ShoppingCartScreen : Screen {
 
     @Composable
     fun CartLineCard(
+        bookList: List<BookData>,
         cartLine: CartLine,
         update: (cartLineData: CartLineData) -> Unit,
         delete: (id: String) -> Unit
@@ -142,7 +150,7 @@ class ShoppingCartScreen : Screen {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
 
-                    ){
+                        ) {
                         Image(
                             url = book.imagePath,
                             modifier = Modifier.size(width = 80.dp, height = 120.dp).padding(15.dp)

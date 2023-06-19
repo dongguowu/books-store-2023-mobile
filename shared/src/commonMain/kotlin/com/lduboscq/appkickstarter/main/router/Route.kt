@@ -1,6 +1,6 @@
-package com.lduboscq.appkickstarter.main
+package com.lduboscq.appkickstarter.main.router
 
-import com.lduboscq.appkickstarter.main.book.BookData
+import com.lduboscq.appkickstarter.main.model.BookData
 import com.lduboscq.appkickstarter.model.User
 
 

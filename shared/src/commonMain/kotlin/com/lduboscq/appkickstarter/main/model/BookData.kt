@@ -1,4 +1,4 @@
-package com.lduboscq.appkickstarter.main.book
+package com.lduboscq.appkickstarter.main.model
 
 
 data class BookData(

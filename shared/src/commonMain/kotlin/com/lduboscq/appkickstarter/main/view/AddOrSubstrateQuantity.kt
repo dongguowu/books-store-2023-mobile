@@ -1,4 +1,4 @@
-package com.lduboscq.appkickstarter.main.shoppingcart
+package com.lduboscq.appkickstarter.main.view
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lduboscq.appkickstarter.main.model.CartLine
+import com.lduboscq.appkickstarter.main.model.CartLineData
 
 @Composable
 fun AddOrSubstrateQuantity(

@@ -1,4 +1,4 @@
-package com.lduboscq.appkickstarter.main.shoppingcart
+package com.lduboscq.appkickstarter.main.model
 
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.RealmUUID
