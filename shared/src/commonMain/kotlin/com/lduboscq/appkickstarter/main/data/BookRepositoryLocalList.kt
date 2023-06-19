@@ -4,6 +4,15 @@ import com.lduboscq.appkickstarter.main.model.BookData
 
 class BookRepositoryLocalList : BookRepositoryInterface {
     override fun getAll(): List<BookData> {
+        return getBooks()
+    }
+
+    override fun findByTitle(title: String): List<BookData> {
+        return getBooks().filter { it.title.lowercase().indexOf(title.lowercase()) >= 0 }
+    }
+
+    private fun getBooks(): List<BookData> {
+
         return listOf(
             BookData(
                 "1",

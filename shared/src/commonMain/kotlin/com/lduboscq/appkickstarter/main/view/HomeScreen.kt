@@ -29,6 +29,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
@@ -50,12 +51,12 @@ import com.lduboscq.appkickstarter.main.layout.MyTopBar
 import com.lduboscq.appkickstarter.main.model.BookData
 import com.lduboscq.appkickstarter.main.model.CartLine
 import com.lduboscq.appkickstarter.main.model.CartLineData
+import com.lduboscq.appkickstarter.main.model.User
 import com.lduboscq.appkickstarter.main.router.Route
 import com.lduboscq.appkickstarter.main.router.screenRouter
 import com.lduboscq.appkickstarter.main.screenModel.ShoppingCartScreenModel
 import com.lduboscq.appkickstarter.main.view.component.AddOrSubstrateQuantity
 import com.lduboscq.appkickstarter.main.view.component.Image
-import com.lduboscq.appkickstarter.main.model.User
 
 internal class BookStoreHomeScreen(var user: User? = null) : Screen {
 
@@ -118,17 +119,31 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(paddingValues),
                 ) {
-
-                    var queryBookstring = ""
+                    var text by rememberSaveable { mutableStateOf("") }
                     OutlinedTextField(
-                        value = queryBookstring,
+                        value = text,
                         onValueChange = {
+                            text = it
                             if (it.length >= 3) {
-                                messageOnTopBar = it.toString()
-//                                bookListState = bookList.filter { book -> book.title.indexOf(it) != -1 } as SnapshotStateList<BookData>
+                                messageOnTopBar = "searching book $it"
+                                val filteredList = screenModel.searchBook(it)
+                                if (filteredList.size >= 0) {
+                                    messageOnTopBar = "found ${filteredList.size} book(s) "
+                                    bookListState.clear()
+                                    for (item in filteredList) {
+                                        bookListState.add(item)
+                                    }
+                                } else {
+                                    messageOnTopBar = "not found book on $it"
+                                }
                             } else {
-//                                bookListState = getBookList() as SnapshotStateList<BookData>
+                                messageOnTopBar = ""
+                                bookListState.clear()
+                                for (item in screenModel.getAllBook()) {
+                                    bookListState.add(item)
+                                }
                             }
+
                         },
                         label = {
                             Icon(
@@ -137,6 +152,8 @@ internal class BookStoreHomeScreen(var user: User? = null) : Screen {
                             )
                         }
                     )
+
+                    // Books list
                     LazyColumn {
                         for (book in bookListState) {
                             item {

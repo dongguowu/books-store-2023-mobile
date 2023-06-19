@@ -26,6 +26,10 @@ class ShoppingCartScreenModel(
         return bookRepository.getAll()
     }
 
+    fun searchBook(title: String): List<BookData> {
+        return bookRepository.findByTitle(title)
+    }
+
     fun getCartLineByBookId(bookId: String) {
         coroutineScope.launch {
             mutableState.value = State.Loading
