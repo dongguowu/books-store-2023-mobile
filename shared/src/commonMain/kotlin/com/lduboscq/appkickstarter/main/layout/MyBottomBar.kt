@@ -25,7 +25,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.lduboscq.appkickstarter.main.router.Route
 import com.lduboscq.appkickstarter.main.router.screenRouter
-import com.lduboscq.appkickstarter.model.User
+import com.lduboscq.appkickstarter.main.model.User
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

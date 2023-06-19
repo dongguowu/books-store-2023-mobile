@@ -1,4 +1,4 @@
-package com.lduboscq.appkickstarter.main.view
+package com.lduboscq.appkickstarter.main.view.component
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer

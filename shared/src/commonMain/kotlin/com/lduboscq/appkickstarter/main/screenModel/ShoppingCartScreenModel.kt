@@ -9,7 +9,10 @@ import com.lduboscq.appkickstarter.main.model.CartLine
 import com.lduboscq.appkickstarter.main.model.CartLineData
 import kotlinx.coroutines.launch
 
-class ShoppingCartScreenModel(private val shoppingCartRepository: ShoppingCartRepositoryInterface, private val bookRepository: BookRepositoryInterface) :
+class ShoppingCartScreenModel(
+    private val shoppingCartRepository: ShoppingCartRepositoryInterface,
+    private val bookRepository: BookRepositoryInterface
+) :
     StateScreenModel<ShoppingCartScreenModel.State>(State.Init) {
 
     sealed class State {
@@ -26,7 +29,8 @@ class ShoppingCartScreenModel(private val shoppingCartRepository: ShoppingCartRe
     fun getCartLineByBookId(bookId: String) {
         coroutineScope.launch {
             mutableState.value = State.Loading
-            mutableState.value = State.Result(cartLineList = shoppingCartRepository.getByBookId(bookId))
+            mutableState.value =
+                State.Result(cartLineList = shoppingCartRepository.getByBookId(bookId))
         }
     }
 
@@ -34,9 +38,8 @@ class ShoppingCartScreenModel(private val shoppingCartRepository: ShoppingCartRe
     fun addOrUpdateCartLine(cartLine: CartLineData) {
         coroutineScope.launch {
             mutableState.value = State.Loading
-            mutableState.value = State.Result(
-                cartLineList = shoppingCartRepository.addOrUpdate(cartLine)
-            )
+            mutableState.value =
+                State.Result(cartLineList = shoppingCartRepository.addOrUpdate(cartLine))
         }
     }
 

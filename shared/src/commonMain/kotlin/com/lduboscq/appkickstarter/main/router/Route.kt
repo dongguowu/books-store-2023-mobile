@@ -1,7 +1,7 @@
 package com.lduboscq.appkickstarter.main.router
 
 import com.lduboscq.appkickstarter.main.model.BookData
-import com.lduboscq.appkickstarter.model.User
+import com.lduboscq.appkickstarter.main.model.User
 
 
 sealed class Route {

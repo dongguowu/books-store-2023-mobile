@@ -20,6 +20,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import com.lduboscq.appkickstarter.main.router.Route
 import com.lduboscq.appkickstarter.main.layout.MyBottomBar
 import com.lduboscq.appkickstarter.main.model.BookData
+import com.lduboscq.appkickstarter.main.view.component.Image
 
 
 internal class DetailScreen(var book: BookData?) : Screen {

@@ -42,6 +42,8 @@ import com.lduboscq.appkickstarter.main.model.CartLineData
 import com.lduboscq.appkickstarter.main.router.Route
 import com.lduboscq.appkickstarter.main.router.screenRouter
 import com.lduboscq.appkickstarter.main.screenModel.ShoppingCartScreenModel
+import com.lduboscq.appkickstarter.main.view.component.AddOrSubstrateQuantity
+import com.lduboscq.appkickstarter.main.view.component.Image
 
 class ShoppingCartScreen : Screen {
 

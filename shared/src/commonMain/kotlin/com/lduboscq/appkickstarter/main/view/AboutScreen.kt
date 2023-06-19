@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import com.lduboscq.appkickstarter.main.router.Route
 import com.lduboscq.appkickstarter.main.layout.MyBottomBar
+import com.lduboscq.appkickstarter.main.view.component.Image
 
 internal class AboutScreen(var feature: String) : Screen {
 
